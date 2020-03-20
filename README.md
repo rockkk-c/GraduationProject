@@ -1,2 +1,2 @@
 # graduationProject
-d2-demo
+d2-admin ：前端页面展示
