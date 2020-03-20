@@ -35,7 +35,7 @@ const frameIn = [
         path: 'page2',
         name: 'page2',
         meta: {
-          title: '页面 2',
+          title: '页面 222',
           auth: true
         },
         component: _import('demo/page2')
@@ -72,7 +72,17 @@ const frameIn = [
         name: 'redirect',
         hidden: true,
         component: _import('system/function/redirect')
-      }
+      },
+      // 编辑器
+      {
+        path: 'user',
+        name: 'user',
+        meta: {
+          title: '编辑器',
+          auth: true
+        },
+        component: _import('user/user')
+      },
     ]
   }
 ]
