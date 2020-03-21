@@ -21,33 +21,14 @@ const frameIn = [
         },
         component: _import('system/index')
       },
-      // 演示页面
       {
-        path: 'page1',
-        name: 'page1',
+        path: 'client-manager',
+        name: 'client-manager',
         meta: {
-          title: '页面 1',
+          title: '客户管理',
           auth: true
         },
-        component: _import('demo/page1')
-      },
-      {
-        path: 'page2',
-        name: 'page2',
-        meta: {
-          title: '页面 222',
-          auth: true
-        },
-        component: _import('demo/page2')
-      },
-      {
-        path: 'page3',
-        name: 'page3',
-        meta: {
-          title: '页面 3',
-          auth: true
-        },
-        component: _import('demo/page3')
+        component: _import('system/basic/client/client-manager')
       },
       // 系统 前端日志
       {
@@ -72,16 +53,6 @@ const frameIn = [
         name: 'redirect',
         hidden: true,
         component: _import('system/function/redirect')
-      },
-      // 编辑器
-      {
-        path: 'user',
-        name: 'user',
-        meta: {
-          title: '编辑器',
-          auth: true
-        },
-        component: _import('user/user')
       },
     ]
   }
