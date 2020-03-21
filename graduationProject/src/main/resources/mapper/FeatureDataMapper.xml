@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rock.mapper.FeatureDataMapper">
+    <insert id="insertFeatureData" >
+        insert into featureData(fid,overdueCount,BFlagCount,PhoneBFCount,OneDimenRelationshipBFCount,OneDimenRelationshipPhoneBFCount,
+                                TwoDimenRelationshipBFCount,TwoDimenRelationshipPhoneBFCount,label)
+        values(#{fid},#{overdueCount},#{BFlagCount},#{PhoneBFCount},#{OneDimenRelationshipBFCount},#{OneDimenRelationshipPhoneBFCount},
+               #{TwoDimenRelationshipBFCount},#{TwoDimenRelationshipPhoneBFCount},#{label})
+    </insert>
+
+    <select id="selectById" resultType="com.rock.entity.FeatureData">
+        SELECT * FROM featuredata WHERE fid = #{applyId}
+    </select>
+
+
+</mapper>
