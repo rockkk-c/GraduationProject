@@ -1,5 +1,6 @@
 package com.rock.service;
 
+<<<<<<< HEAD
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rock.entity.Employee;
 import com.rock.mapper.EmployeeMapper;
@@ -15,6 +16,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 @GraphQLApi
+=======
+import com.rock.mapper.EmployeeMapper;
+import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+
+>>>>>>> origin/master
 @Service
 public class EmployeeService {
     @Autowired
@@ -25,6 +36,7 @@ public class EmployeeService {
      *
      * @return
      */
+<<<<<<< HEAD
     @GraphQLQuery(name = "verifyTheOnlyEmp", description = "检验Employee是否存在")
     public boolean verifyTheOnlyEmp(@GraphQLArgument(name = "empId", description = "empId") String empId) {
 
@@ -32,10 +44,16 @@ public class EmployeeService {
       // Employee employee1=employeeMapper.selectById(empId);
       // String s=employee1.getName();
           if (Objects.isNull(employeeMapper.selectById(empId))) {
+=======
+    @GraphQLQuery(name = "verifyTheOnlyFeatureData", description = "检验featureData是否已经存在")
+    public boolean verifyTheOnlyEmp(@GraphQLArgument(name = "empId", description = "empId") String empId) {
+        if (Objects.isNull(employeeMapper.getEmpById(empId))) {
+>>>>>>> origin/master
             return false;
         }
         return true;
     }
+<<<<<<< HEAD
     @GraphQLQuery(name = "login", description = "登录")
     public String login(@GraphQLArgument(name = "empId", description = "empId") String empId,
                          @GraphQLArgument(name = "empPwd", description = "empPwd") String empPwd,
@@ -101,4 +119,7 @@ public class EmployeeService {
         }
         return employeeMapper.selectList(queryWrapper);
     }
+=======
+
+>>>>>>> origin/master
 }
