@@ -1,5 +1,6 @@
 package com.rock.service;
 
+import com.rock.entity.Result;
 import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
 import com.rock.repository.PhoneRepository;
@@ -21,7 +22,7 @@ public class PhoneService {
     private PhoneRepository phoneRepository;
 
     @GraphQLMutation(name = "addPhone", description = "添加Phone实体结点")
-    public String  addPhone(@GraphQLArgument(name = "person", description = "规则id") Phone phone){
+    public Result addPhone(@GraphQLArgument(name = "person", description = "规则id") Phone phone){
 
         try{
             phoneRepository.save(phone);
@@ -32,7 +33,7 @@ public class PhoneService {
 
 
 
-        return "号码："+phone.getNumber()+"添加Phone成功，";
+        return Result.ok("号码："+phone.getNumber()+"添加Phone成功");
 
     }
 
@@ -50,15 +51,15 @@ public class PhoneService {
     }
 
     @GraphQLMutation(name = "updatePhoneByNumber", description = "根据Phone的number修改其黑白名单状态")
-    public String  updatePhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number,
+    public Result  updatePhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number,
                                        @GraphQLArgument(name = "flag", description = "flag") String flag) {
         phoneRepository.updatePhoneByNumber(number,flag);
-        return "号码:"+number+",修改号码状态成功！";
+        return Result.ok("号码:"+number+",修改号码状态成功！");
     }
 
     @GraphQLMutation(name = "deletePhoneByNumber", description = "根据Phone的number删除Phone")
-    public String  deletePhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number){
+    public Result  deletePhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number){
         phoneRepository.deletePhoneByNumber(number);
-        return "号码:"+number+",删除号码成功！";
+        return Result.ok("号码:"+number+",删除号码成功！");
     }
 }

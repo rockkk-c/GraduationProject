@@ -1,6 +1,7 @@
 package com.rock.service;
 
 import com.rock.entity.FeatureData;
+import com.rock.entity.Result;
 import com.rock.mapper.FeatureDataMapper;
 import com.rock.nodeEntity.Applicant;
 import com.rock.nodeEntity.Person;
@@ -93,12 +94,12 @@ public class ApplicantService {
      * @return
      */
     @GraphQLMutation(name = "forFeatureDataTable", description = "对数据集进行操作，得到其特征数值表")
-    public String forFeatureDataTable() throws Exception {
+    public Result forFeatureDataTable() throws Exception {
         List<String> ids = applicantRepository.getAllApplicantId();
         for(String  id  :  ids)  {
             FeatureData f=this.BFCheck(id);
         }
-        return "得到特征数值表成功";
+        return Result.ok("得到特征数值表成功");
     }
 
     @GraphQLQuery(name = "BFPredict", description = "仅获取7个特征值，用来预测")
@@ -137,7 +138,7 @@ public class ApplicantService {
     * */
 
     @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
-    public String  addApplicant(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant){
+    public Result  addApplicant(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant){
 
         try{
             applicantRepository.save(applicant);
@@ -174,7 +175,7 @@ public class ApplicantService {
             log.error("ApplicantService 发生的异常为：Person新增失败! {} 参数为：{}", e, applicant);
             throw new RuntimeException(e.getMessage(), e);
         }
-        return "添加进件成功";
+        return Result.ok("添加进件成功");
 
     }
 
@@ -183,7 +184,7 @@ public class ApplicantService {
      * */
 
     @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
-    public String  addApplicantAndPerson(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant,
+    public Result  addApplicantAndPerson(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant,
                                          @GraphQLArgument(name = "person", description = "person")Person person){
 
        personService.addPerson(person);
@@ -222,7 +223,8 @@ public class ApplicantService {
             log.error("ApplicantService 发生的异常为：Person新增失败! {} 参数为：{}", e, applicant);
             throw new RuntimeException(e.getMessage(), e);
         }
-        return "添加进件成功";
+        return Result.ok("添加进件成功");
+
 
     }
 }
