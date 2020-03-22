@@ -1,0 +1,17 @@
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rock.mapper.EmployeeMapper">
+<!--    <select id="getEmpById" parameterType="int" resultType="com.rock.entity.Employee">
+        SELECT * FROM Employee WHERE emp_id = #{empId}
+    </select>-->
+
+    <select id="selectAllEmployee" resultType="com.rock.entity.Employee">
+        SELECT emp_id,emp_name,emp_pwd,emp_role FROM Employee
+    </select>
+<!--    <insert id="insert" parameterType="com.rock.entity.Employee">
+        insert into Employee(emp_name,emp_pwd,emp_role) values(#{empName},#{empPwd},#{empRole});
+    </insert>-->
+</mapper>
