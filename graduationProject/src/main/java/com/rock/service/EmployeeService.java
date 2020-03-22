@@ -2,6 +2,7 @@ package com.rock.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rock.entity.Employee;
+import com.rock.entity.Result;
 import com.rock.mapper.EmployeeMapper;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -32,24 +33,25 @@ public class EmployeeService {
     }
 
     @GraphQLQuery(name = "login", description = "登录")
-    public String login(@GraphQLArgument(name = "empId", description = "empId") String empId,
+    public Result login(@GraphQLArgument(name = "empId", description = "empId") String empId,
                         @GraphQLArgument(name = "empPwd", description = "empPwd") String empPwd,
                         @GraphQLArgument(name = "empRole", description = "empRole") String empRole) {
         if (!this.verifyTheOnlyEmp(empId)) {
-            return "此用户不存在";
+            return Result.error("此用户不存在");
         }
         Employee employee = employeeMapper.selectById(empId);
         if (employee.getPwd().equals(empPwd) && employee.getRole().equals(empRole)) {
-            return "登录成功！";
+            return Result.ok("登录成功");
         }
+        return Result.error("密码错误");
 
-        return "密码错误";
     }
 
     @GraphQLMutation(name = "addEmployee", description = "添加工作人员")
-    public String addEmployee(@GraphQLArgument(name = "employee", description = "employee") Employee employee) {
+    public Result addEmployee(@GraphQLArgument(name = "employee", description = "employee") Employee employee) {
         employeeMapper.insert(employee);
-        return "添加成功";
+        return Result.ok("添加成功");
+
     }
 
     @GraphQLQuery(name = "loadListOfEmployee", description = "按条件查询Employee")
@@ -66,21 +68,21 @@ public class EmployeeService {
         return employeeMapper.selectList(queryWrapper);
     }
     @GraphQLMutation(name="deleteEmp",description = "通过id删除employee")
-    public String deleteEmp(@GraphQLArgument(name="employee",description = "employee")Employee employee){
+    public Result deleteEmp(@GraphQLArgument(name="employee",description = "employee")Employee employee){
         if (!this.verifyTheOnlyEmp(employee.getId())) {
-            return "此用户不存在";
+            return Result.error("此用户不存在");
         }
         if(Objects.isNull(employee)){
-            return "请选择要删除的员工";
+            return Result.error("请选择要删除的员工");
         }
         employeeMapper.deleteById(employee.getId());
-        return "删除成功";
+        return Result.ok("删除成功");
 
     }
     @GraphQLMutation(name="updateEmp",description = "修改employee信息")
-    public String updateEmp(@GraphQLArgument(name="employee",description = "employee")Employee employee){
+    public Result updateEmp(@GraphQLArgument(name="employee",description = "employee")Employee employee){
         employeeMapper.updateById(employee);
-        return "修改信息成功";
+        return Result.ok("修改信息成功");
     }
 }
 

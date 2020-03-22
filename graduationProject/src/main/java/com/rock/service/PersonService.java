@@ -1,6 +1,7 @@
 package com.rock.service;
 
 
+import com.rock.entity.Result;
 import com.rock.mapper.FeatureDataMapper;
 import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
@@ -30,7 +31,7 @@ public class PersonService {
     @Autowired
     private PhoneService phoneService;
     @GraphQLMutation(name = "addPerson", description = "添加Person实体结点,同时添加Phone结点，并创建实体结点间关系")
-    public String  addPerson(@GraphQLArgument(name = "person", description = "规则id")Person person){
+    public Result addPerson(@GraphQLArgument(name = "person", description = "规则id")Person person){
 
        try{
            //唯一性检验，person不存在时添加
@@ -51,7 +52,7 @@ public class PersonService {
            log.error("PersonService 发生的异常为：Person新增失败! {} 参数为：{}", e, person);
            throw new RuntimeException(e.getMessage(), e);
        }
-        return "添加Person成功";
+        return Result.ok("添加Person成功");
 
     }
     @GraphQLQuery(name = "getoverdueCountByApplyId", description = "进件的申请人之前的逾期数")
