@@ -6,8 +6,8 @@ export default [
     icon: 'user',
     children: [
       { path: '/client-manager', title: '客户管理' },
-      { path: '/page2', title: '页面 2' },
-      { path: '/page3', title: '页面 3' }
+      { path: '/incoming-manage', title: '进件管理' },
+      { path: '/number-manage', title: '号码管理' }
     ]
   },
   {

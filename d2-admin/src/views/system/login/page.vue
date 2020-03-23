@@ -34,7 +34,7 @@
                   </el-input>
                 </el-form-item>
                 <el-form-item prop="role">
-                  
+
                   <el-row>
                     <el-col :span="8">
                       登录角色
@@ -42,17 +42,13 @@
                     <el-col :span="16">
                       <el-select v-model="formLogin.role">
                         <i slot="prepend" class="fa fa-user-circle-o"></i>
-                          <el-option
-                            label="管理员"
-                            :value="0">
-                          </el-option>
-                        <el-option
-                          label="客户"
-                          :value="1">
+                        <el-option label="管理员" :value="0">
+                        </el-option>
+                        <el-option label="工作人员" :value="1">
                         </el-option>
                       </el-select>
                     </el-col>
-                    
+
                   </el-row>
                 </el-form-item>
                 <el-form-item prop="code">
@@ -127,9 +123,9 @@
         ],
         // 表单
         formLogin: {
-          username: 'admin',
-          password: 'admin',
-          role:0,
+          username: '',
+          password: '',
+          role: 0,
           code: 'v9am'
         },
         // 表单校验
@@ -150,7 +146,7 @@
             trigger: 'blur'
           }]
         },
-        role:"admin"
+        role: "admin"
       }
     },
     mounted() {
@@ -168,7 +164,7 @@
       test() {
         this.$apollo.query({
           // Query
-          query: gql`query($role:String!){
+          query: gql `query($role:String!){
              loadListOfEmployee(employee:{
                role:$role
              })
@@ -194,6 +190,7 @@
        * @param {Object} user 用户信息
        */
       handleUserBtnClick(user) {
+        console.log(111);
         this.formLogin.username = user.username
         this.formLogin.password = user.password
         this.submit()
@@ -203,22 +200,42 @@
        */
       // 提交登录信息
       submit() {
+
+        let This = this;
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
-            // 登录
-            // 注意 这里的演示没有传验证码
-            // 具体需要传递的数据请自行修改代码
-            this.login({
-                username: this.formLogin.username,
-                password: this.formLogin.password
-              })
-              .then(() => {
-                // 重定向对象不存在则返回顶层路径
-                this.$router.replace(this.$route.query.redirect || '/')
-              })
-          } else {
-            // 登录表单校验失败
-            this.$message.error('表单校验失败，请检查')
+            this.$apollo.query({
+              // Query
+              query: gql `query($empId:String!,$empPwd:String!,$empRole:String!){
+                 login(empId:$empId,empPwd:$empPwd,empRole:$empRole){
+                      code,
+                      message
+                  }
+             }`,
+              // Parameters
+              variables: {
+                empId: This.formLogin.username,
+                empPwd: This.formLogin.password,
+                empRole: This.formLogin.role == 0 ? 'admin' : 'staff'
+              }
+            }).then(res => {
+
+              if (res.data.login.code == 0) {
+               this.login({
+                   username: "admin",
+                   password: "admin"
+                 })
+                 .then(() => {
+                   // 重定向对象不存在则返回顶层路径
+                   this.$router.replace(this.$route.query.redirect || '/')
+                 })
+              } else {
+                This.$message.error(res.data.login.message);
+              }
+            }).catch(error => {
+               This.$message.error("服务器地址异常，"+error);
+            })
+
           }
         })
       }
