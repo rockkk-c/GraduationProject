@@ -30,6 +30,34 @@ const frameIn = [
         },
         component: _import('system/basic/client/client-manager')
       },
+      {
+        path: 'client-detail',
+        name: 'client-detail',
+        meta: {
+          title: '客户详情',
+          auth: true
+        },
+        component: _import('system/basic/client/client-detail')
+      },
+      {
+        path: 'incoming-manage',
+        name: 'incoming-manage',
+        meta: {
+          title: '进件管理',
+          auth: true
+        },
+        component: _import('system/basic/incoming/incoming-manage')
+      },
+      {
+        path: 'number-manage',
+        name: 'number-manage',
+        meta: {
+          title: '号码管理',
+          auth: true
+        },
+        component: _import('system/basic/number/number-manage')
+      },
+
       // 系统 前端日志
       {
         path: 'log',
