@@ -1,4 +1,3 @@
-/*
 package com.rock.service;
 
 import com.rock.entity.Rule;
@@ -31,4 +30,3 @@ public class RuleService {
     }
 
 }
-*/
