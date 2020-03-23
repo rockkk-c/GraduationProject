@@ -33,6 +33,28 @@
                     <i slot="prepend" class="fa fa-keyboard-o"></i>
                   </el-input>
                 </el-form-item>
+                <el-form-item prop="role">
+                  
+                  <el-row>
+                    <el-col :span="8">
+                      登录角色
+                    </el-col>
+                    <el-col :span="16">
+                      <el-select v-model="formLogin.role">
+                        <i slot="prepend" class="fa fa-user-circle-o"></i>
+                          <el-option
+                            label="管理员"
+                            :value="0">
+                          </el-option>
+                        <el-option
+                          label="客户"
+                          :value="1">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+                    
+                  </el-row>
+                </el-form-item>
                 <el-form-item prop="code">
                   <el-input type="text" v-model="formLogin.code" placeholder="验证码">
                     <template slot="append">
@@ -76,7 +98,6 @@
     mapActions
   } from 'vuex'
   import localeMixin from '@/locales/mixin.js'
-  import SystemLogin from '@/api/system/login'
   import gql from "graphql-tag"
   export default {
     mixins: [
@@ -108,6 +129,7 @@
         formLogin: {
           username: 'admin',
           password: 'admin',
+          role:0,
           code: 'v9am'
         },
         // 表单校验
