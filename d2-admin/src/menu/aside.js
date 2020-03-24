@@ -5,8 +5,8 @@ export default [
     title: '基础信息',
     icon: 'user',
     children: [
-      { path: '/client-manager', title: '客户管理' },
-      { path: '/incoming-manage', title: '进件管理' },
+      { path: '/client-manage', title: '客户管理' },
+      { path: '/apply-manage', title: '进件管理' },
       { path: '/number-manage', title: '号码管理' }
     ]
   },

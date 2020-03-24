@@ -22,13 +22,13 @@ const frameIn = [
         component: _import('system/index')
       },
       {
-        path: 'client-manager',
-        name: 'client-manager',
+        path: 'client-manage',
+        name: 'client-manage',
         meta: {
           title: '客户管理',
           auth: true
         },
-        component: _import('system/basic/client/client-manager')
+        component: _import('system/basic/client/client-manage')
       },
       {
         path: 'client-detail',
@@ -40,13 +40,13 @@ const frameIn = [
         component: _import('system/basic/client/client-detail')
       },
       {
-        path: 'incoming-manage',
-        name: 'incoming-manage',
+        path: 'apply-manage',
+        name: 'apply-manage',
         meta: {
           title: '进件管理',
           auth: true
         },
-        component: _import('system/basic/incoming/incoming-manage')
+        component: _import('system/basic/apply/apply-manage')
       },
       {
         path: 'number-manage',

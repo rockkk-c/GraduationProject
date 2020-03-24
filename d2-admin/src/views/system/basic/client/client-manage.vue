@@ -21,8 +21,8 @@
                 </el-input>
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-                <div style="font-size: 18px;width: 40%;text-align: right;margin-right: 20px;">黑名单:</div>
-                <el-input placeholder="请输入黑名单" v-model="searchInput.blackList" clearable style="width: 80%;">
+                <div style="font-size: 18px;width: 40%;text-align: right;margin-right: 20px;">状态:</div>
+                <el-input placeholder="请输入黑名单状态" v-model="searchInput.blackList" clearable style="width: 80%;">
                 </el-input>
               </div>
             </div>
@@ -38,15 +38,25 @@
       <hr />
       <el-col style="margin-top: 20px;">
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="date" label="日期" width="180">
+  <!--        <el-table-column prop="date" label="日期" width="180">
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
           <el-table-column prop="address" label="地址">
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="200">
+          </el-table-column> -->
+		  <el-table-column prop="pid" label="ID">
+		  </el-table-column>
+		  <el-table-column prop="pname" label="姓名">
+		  </el-table-column>
+		  <el-table-column prop="psex" label="性别">
+		  </el-table-column>
+		  <el-table-column prop="pnumber" label="电话">
+		  </el-table-column>
+		  <el-table-column prop="pflag" label="状态">
+		  </el-table-column>
+          <el-table-column fixed="right" label="操作">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small">他的进件</el-button>
               <el-button type="text" size="small">编辑</el-button>
               <el-button @click="handleDeleteClick(scope.row)" type="text" size="small">删除</el-button>
             </template>
@@ -118,36 +128,26 @@
         dialogFormVisible: false,
         formLabelWidth: '120px',
         form: {
-          name: "",
-          region: ""
+          name: '',
+          region: ''
         },
         searchInput: {
-          id: "",
-          name: "",
-          phone: "",
-          blackList: ""
+          id: '',
+          name: '',
+          phone: '',
+          blackList: ''
         },
         tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+		  pid: '100001',
+		  pname: 'lisa',
+		  psex: 'female',
+		  pnumber: '15699666451',
+		  pflag: 'white'
         }]
       }
     }
   }
-</script>
+  </script>
 
 <style>
 </style>

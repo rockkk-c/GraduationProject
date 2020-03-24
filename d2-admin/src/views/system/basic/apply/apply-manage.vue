@@ -30,7 +30,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary">查询</el-button>
-              <el-button @click="createBtnClick()" type="danger" style="margin-left: 40px;">新增客户</el-button>
+              <el-button @click="createBtnClick()" type="danger" style="margin-left: 40px;">新增进件</el-button>
             </div>
           </el-col>
         </el-row>
@@ -38,15 +38,29 @@
       <hr />
       <el-col style="margin-top: 20px;">
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="date" label="日期" width="180">
+          <el-table-column prop="id" label="进件号">
           </el-table-column>
-          <el-table-column prop="name" label="姓名" width="180">
+          <el-table-column prop="amount" label="金额">
           </el-table-column>
-          <el-table-column prop="address" label="地址">
+          <el-table-column prop="term" label="期数">
+		  </el-table-column>
+		  <el-table-column prop="job" label="工作">
+		  </el-table-column>
+		  <el-table-column prop="city" label="城市">
+		  </el-table-column>
+		  <el-table-column prop="parent_phone" label="父母电话">
+		  </el-table-column>
+	      <el-table-column prop="colleague_phone" label="同事电话">
+		  </el-table-column>
+		  <el-table-column prop="company_phone" label="公司电话">
+		  </el-table-column>
+          <el-table-column prop="applicant" label="申请人">
           </el-table-column>
+		  <el-table-column prop="status" label="进件状态">
+		  </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small">查看申请人</el-button>
               <el-button type="text" size="small">编辑</el-button>
               <el-button @click="handleDeleteClick(scope.row)" type="text" size="small">删除</el-button>
             </template>
@@ -127,23 +141,35 @@
           phone: "",
           blackList: ""
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }]
+        // tableData: [{
+        //   date: '2016-05-02',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        // }, {
+        //   date: '2016-05-04',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1518 弄'
+        // }, {
+        //   date: '2016-05-01',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        // }, {
+        //   date: '2016-05-03',
+        //   name: '王小虎',
+        //   address: '上海市普陀区金沙江路 1518 弄'
+        // }],
+		 tableData: [{
+			 id: '2000001',
+			 amount: '10000',
+			 term: '5',
+			 job: '工程师',
+			 city: '北京市',
+			 parent_phone: '15963265478',
+			 colleague_phone: '156323654',
+			 company_phone: '15632548745',
+			 applicant: '100001',
+			 status: 'InProgress'
+		}],
       }
     }
   }
