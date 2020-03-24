@@ -1,7 +1,6 @@
 package com.rock.repository;
 
 import com.rock.nodeEntity.Applicant;
-import com.rock.nodeEntity.Person;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
@@ -23,7 +22,7 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
             "WHERE n.id =  a.applicant\n" +
             "merge (n)-[r:APPLY]->(a)")
     void createApply();
-    
+
     /*
     * 创建COLLEAGUE_PHONE关系
     * */

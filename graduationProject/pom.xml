@@ -47,10 +47,7 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.1.0</version>
         </dependency>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
         <!-- MySQL驱动 -->
         <dependency>
             <groupId>mysql</groupId>
@@ -104,14 +101,13 @@
             <version>0.0.20131108.vaadin1</version>
             <scope>compile</scope>
         </dependency>
-<<<<<<< HEAD
+
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
             <version>2.2</version>
         </dependency>
-=======
->>>>>>> origin/master
+
     </dependencies>
 
     <build>
