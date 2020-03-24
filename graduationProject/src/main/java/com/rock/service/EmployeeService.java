@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-@GraphQLApi
 @Service
+@GraphQLApi
 public class EmployeeService {
     @Autowired
     private EmployeeMapper employeeMapper;
@@ -83,6 +83,11 @@ public class EmployeeService {
     public Result updateEmp(@GraphQLArgument(name="employee",description = "employee")Employee employee){
         employeeMapper.updateById(employee);
         return Result.ok("修改信息成功");
+    }
+
+    @GraphQLQuery(name="selectAllEmployee",description = "查询所有员工")
+    public List<Employee>selectAllEmployee(){
+        return employeeMapper.selectAllEmployee();
     }
 }
 

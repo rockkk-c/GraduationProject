@@ -16,6 +16,7 @@ import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
+import org.neo4j.driver.internal.shaded.io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
@@ -87,7 +88,18 @@ public class ApplicantService {
         return true;
     }
 
-
+    /**
+     * 检验Applicacnt是否已经存在
+     *
+     * @return
+     */
+    @GraphQLQuery(name = "verifyTheOnlyApplicacnt", description = "检验featureData是否已经存在")
+    public boolean verifyTheOnlyApplicacnt(@GraphQLArgument(name = "applyId", description = "applyId") String applyId) {
+        if (Objects.isNull(this.applicantRepository.selectApplicantById(applyId))) {
+            return false;
+        }
+        return true;
+    }
     /**
      * 对数据集进行操作，将特征值保存到数据库得到其特征数值表
      *
@@ -139,6 +151,9 @@ public class ApplicantService {
 
     @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
     public Result  addApplicant(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant){
+        if(!this.verifyTheOnlyApplicacnt(applicant.getId())){
+            return Result.error("此Applicant的id已存在，请重新输入");
+        }
 
         try{
             applicantRepository.save(applicant);
@@ -186,7 +201,9 @@ public class ApplicantService {
     @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
     public Result  addApplicantAndPerson(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant,
                                          @GraphQLArgument(name = "person", description = "person")Person person){
-
+        if(!this.verifyTheOnlyApplicacnt(applicant.getId())){
+            return Result.error("此Applicant的id已存在，请重新输入");
+        }
        personService.addPerson(person);
         try{
             applicantRepository.save(applicant);
@@ -225,6 +242,18 @@ public class ApplicantService {
         }
         return Result.ok("添加进件成功");
 
+    }
+
+    @GraphQLMutation(name = "deleteApplicantById", description = "根据Applicant的id删除Applicant")
+    public Result deleteApplicantById(@GraphQLArgument(name="applyId",description = "Applicant的id")String applyId){
+        if(!this.verifyTheOnlyApplicacnt(applyId)){
+            return Result.error("此进件不存在！");
+        }else if(StringUtil.isNullOrEmpty(applyId)){
+            return Result.error("请选择要删除的进件！");
+        }else {
+            applicantRepository.deleteApplicantById(applyId);
+            return Result.ok("删除成功");
+        }
 
     }
 }

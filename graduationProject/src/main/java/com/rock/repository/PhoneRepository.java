@@ -21,9 +21,15 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     Phone updatePhoneByNumber(@Param("number") String number,@Param("flag") String flag);
 
     /*
-     * 根据number修改Phone的黑白名单状态
+     * 根据number删除Phone
      */
     @Query("match (n:Phone) where n.number={number} delete n")
     void deletePhoneByNumber(@Param("number") String number);
+
+    /*
+     * 添加phone
+     */
+    @Query("MERGE(n:Phone {number:{number},flag :{flag}}) ")
+    void addPhone(@Param("number") String number,@Param("flag") String flag);
 
 }

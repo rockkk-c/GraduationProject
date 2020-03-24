@@ -71,4 +71,16 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
             "merge (n)<-[r:PARENT_OF]-(p)")
     void createParentOf();
 
+    /**
+     *  根据Applicant的id删除Applicant
+     **/
+    @Query("MATCH (n:Applicant)-[r]-() WHERE n.id={applyId} delete r,n")
+    void deleteApplicantById(@Param("applyId") String applyId);
+
+    /**
+     *  根据Applicant的id查询Applicant
+     **/
+    @Query("MATCH (n:Applicant) WHERE n.id={applyId} RETURN n")
+    Applicant selectApplicantById(@Param("applyId") String applyId);
+
 }
