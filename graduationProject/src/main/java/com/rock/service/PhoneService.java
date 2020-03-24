@@ -12,6 +12,7 @@ import org.neo4j.driver.internal.shaded.io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -36,11 +37,7 @@ public class PhoneService {
 
     }
 
-    /**
-     * 检验Phone是否已经存在
-     *
-     * @return true为存在
-     */
+
     @GraphQLQuery(name = "verifyTheOnlyPhone", description = "检验Phone是否已经存在")
     public boolean verifyTheOnlyPhone(@GraphQLArgument(name = "number", description = "number") String number) {
         if (Objects.isNull(this.phoneRepository.getPhoneByNumber(number))) {
@@ -48,12 +45,21 @@ public class PhoneService {
         }
         return true;
     }
+    @GraphQLQuery(name = "getPhoneByNumber", description = "通过号码查询Phone")
+    public Phone getPhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number) {
+        return phoneRepository.getPhoneByNumber(number);
+    }
+
+    @GraphQLQuery(name = "loadListOfPhoneByFlag", description = "通过号码查询Phone")
+    public List<Phone> loadListOfPhoneByFlag(@GraphQLArgument(name = "flag", description = "number") String flag) {
+        return phoneRepository.loadListOfPhoneByFlag(flag);
+    }
 
     @GraphQLMutation(name = "updatePhoneByNumber", description = "根据Phone的number修改其黑白名单状态")
     public Result updatePhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number,
                                       @GraphQLArgument(name = "flag", description = "flag") String flag) {
         phoneRepository.updatePhoneByNumber(number, flag);
-        return Result.ok("号码:" + number + ",修改号码状态成功！");
+        return Result.ok("修改号码状态成功！");
     }
 
     @GraphQLMutation(name = "deletePhoneByNumber", description = "根据Phone的number删除Phone")
@@ -69,4 +75,5 @@ public class PhoneService {
 
     }
 }
+
 
