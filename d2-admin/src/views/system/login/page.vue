@@ -219,21 +219,23 @@
                 empRole: This.formLogin.role == 0 ? 'admin' : 'staff'
               }
             }).then(res => {
-
+              
               if (res.data.login.code == 0) {
-               this.login({
-                   username: "admin",
-                   password: "admin"
-                 })
-                 .then(() => {
-                   // 重定向对象不存在则返回顶层路径
-                   this.$router.replace(this.$route.query.redirect || '/')
-                 })
+                // 设置全局状态
+                This.$store.state.role = This.formLogin.role == 0 ? 'admin' : 'staff';
+                this.login({
+                    username: "admin",
+                    password: "admin"
+                  })
+                  .then(() => {
+                    // 重定向对象不存在则返回顶层路径
+                    this.$router.replace(this.$route.query.redirect || '/')
+                  })
               } else {
                 This.$message.error(res.data.login.message);
               }
             }).catch(error => {
-               This.$message.error("服务器地址异常，"+error);
+              This.$message.error("服务器地址异常，" + error);
             })
 
           }

@@ -22,13 +22,13 @@ const frameIn = [
         component: _import('system/index')
       },
       {
-        path: 'client-manager',
-        name: 'client-manager',
+        path: 'client-manage',
+        name: 'client-manage',
         meta: {
           title: '客户管理',
           auth: true
         },
-        component: _import('system/basic/client/client-manager')
+        component: _import('system/basic/client/client-manage')
       },
       {
         path: 'client-detail',
@@ -40,13 +40,22 @@ const frameIn = [
         component: _import('system/basic/client/client-detail')
       },
       {
-        path: 'incoming-manage',
-        name: 'incoming-manage',
+        path: 'apply-manage',
+        name: 'apply-manage',
         meta: {
           title: '进件管理',
           auth: true
         },
-        component: _import('system/basic/incoming/incoming-manage')
+        component: _import('system/basic/apply/apply-manage')
+      },
+      {
+        path: 'apply-detail',
+        name: 'apply-detail',
+        meta: {
+          title: '申请人详情',
+          auth: true
+        },
+        component: _import('system/basic/apply/apply-detail')
       },
       {
         path: 'number-manage',
@@ -56,6 +65,24 @@ const frameIn = [
           auth: true
         },
         component: _import('system/basic/number/number-manage')
+      },
+      {
+        path: 'number-detail',
+        name: 'number-detail',
+        meta: {
+          title: '机主详情信息',
+          auth: true
+        },
+        component: _import('system/basic/number/number-detail')
+      },
+      {
+        path: 'emp-manage',
+        name: 'emp-manage',
+        meta: {
+          title: '员工管理',
+          auth: true
+        },
+        component: _import('system/sys-setting/employee/emp-manage')
       },
 
       // 系统 前端日志

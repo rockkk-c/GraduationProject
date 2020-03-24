@@ -1,6 +1,6 @@
 <template>
   <d2-container>
-    <h1 @click="test()">查看详情</h1>
+    <h1 @click="test()">查看申请人</h1>
   </d2-container>
 
 </template>
