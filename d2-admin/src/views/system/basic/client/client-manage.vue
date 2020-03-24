@@ -30,7 +30,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary">查询</el-button>
-              <el-button @click="createBtnClick()" type="danger" style="margin-left: 40px;">新增客户</el-button>
+              <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增客户</el-button>
             </div>
           </el-col>
         </el-row>
@@ -66,18 +66,30 @@
 
     </el-row>
 
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+    <el-dialog title="添加新的客户" label-position="right" :visible.sync="dialogFormVisible" width="30%">
+      <el-form :model="createFrom">
+        <el-form-item label="客户姓名">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+        <el-form-item label="客户性别">
+           <el-radio v-model="createFrom.sex" label="男">男</el-radio>
+           <el-radio v-model="createFrom.sex" label="女">女</el-radio>
         </el-form-item>
+        <el-form-item label="客户电话">
+          <el-input v-model="createFrom.phone" style="width: 200px;"  placeholder="电话"></el-input>
+        </el-form-item>
+         <el-form-item label="客户状态" style="display: flex;align-items: center;">
+            <el-switch
+              style="display: block"
+              v-model="createFrom.state"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="白名单"
+              inactive-text="黑名单">
+            </el-switch>
+         </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -122,9 +134,12 @@ export default {
       // 显示添加表单
       dialogFormVisible: false,
       formLabelWidth: '120px',
-      form: {
+      createFrom: {
         name: '',
-        region: ''
+        sex:0,
+        phone:"",
+        state:false
+
       },
       searchInput: {
         id: '',

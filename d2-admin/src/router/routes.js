@@ -49,6 +49,15 @@ const frameIn = [
         component: _import('system/basic/apply/apply-manage')
       },
       {
+        path: 'apply-detail',
+        name: 'apply-detail',
+        meta: {
+          title: '申请人详情',
+          auth: true
+        },
+        component: _import('system/basic/apply/apply-detail')
+      },
+      {
         path: 'number-manage',
         name: 'number-manage',
         meta: {
@@ -56,6 +65,15 @@ const frameIn = [
           auth: true
         },
         component: _import('system/basic/number/number-manage')
+      },
+      {
+        path: 'number-detail',
+        name: 'number-detail',
+        meta: {
+          title: '机主详情信息',
+          auth: true
+        },
+        component: _import('system/basic/number/number-detail')
       },
       {
         path: 'emp-manage',

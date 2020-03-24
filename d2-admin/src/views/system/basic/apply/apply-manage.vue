@@ -30,7 +30,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary">查询</el-button>
-              <el-button @click="createBtnClick()" type="danger" style="margin-left: 40px;">新增进件</el-button>
+              <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增进件</el-button>
             </div>
           </el-col>
         </el-row>
@@ -100,9 +100,9 @@ export default {
     handleClick (row) {
       console.log(row)
       this.$router.push({
-        path: 'client-detail',
+        path: 'apply-detail',
         query: {
-          name: '张三'
+          name: 'xxx'
         }
       })
     },
