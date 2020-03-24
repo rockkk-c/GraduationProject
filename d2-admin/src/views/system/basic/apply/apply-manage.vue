@@ -35,7 +35,7 @@
           </el-col>
         </el-row>
       </el-col>
-      <hr />
+      <hr/>
       <el-col style="margin-top: 20px;">
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column prop="id" label="进件号">
@@ -43,21 +43,21 @@
           <el-table-column prop="amount" label="金额">
           </el-table-column>
           <el-table-column prop="term" label="期数">
-		  </el-table-column>
-		  <el-table-column prop="job" label="工作">
-		  </el-table-column>
-		  <el-table-column prop="city" label="城市">
-		  </el-table-column>
-		  <el-table-column prop="parent_phone" label="父母电话">
-		  </el-table-column>
-	      <el-table-column prop="colleague_phone" label="同事电话">
-		  </el-table-column>
-		  <el-table-column prop="company_phone" label="公司电话">
-		  </el-table-column>
+          </el-table-column>
+          <el-table-column prop="job" label="工作">
+          </el-table-column>
+          <el-table-column prop="city" label="城市">
+          </el-table-column>
+          <el-table-column prop="parent_phone" label="父母电话">
+          </el-table-column>
+          <el-table-column prop="colleague_phone" label="同事电话">
+          </el-table-column>
+          <el-table-column prop="company_phone" label="公司电话">
+          </el-table-column>
           <el-table-column prop="applicant" label="申请人">
           </el-table-column>
-		  <el-table-column prop="status" label="进件状态">
-		  </el-table-column>
+          <el-table-column prop="status" label="进件状态">
+          </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">查看申请人</el-button>
@@ -89,90 +89,83 @@
     </el-dialog>
   </d2-container>
 
-
-
-
-
-
 </template>
 
 <script>
-  export default {
-    methods: {
-      createBtnClick() {
-        this.dialogFormVisible = true;
-      },
-      handleClick(row) {
-        console.log(row);
-        this.$router.push({
-          path: 'client-detail',
-          query: {
-            name: '张三'
-          }
-        });
-      },
-      handleDeleteClick(row) {
-        this.$confirm('确认删除？')
-          .then(_ => {
-            console.log("删除");
-          })
-          .catch(_ => {
-            console.log("取消");
-          });
-      }
-
+export default {
+  methods: {
+    createBtnClick () {
+      this.dialogFormVisible = true
     },
-    data() {
-      return {
+    handleClick (row) {
+      console.log(row)
+      this.$router.push({
+        path: 'client-detail',
+        query: {
+          name: '张三'
+        }
+      })
+    },
+    handleDeleteClick (row) {
+      this.$confirm('确认删除？')
+        .then(_ => {
+          console.log('删除')
+        })
+        .catch(_ => {
+          console.log('取消')
+        })
+    }
 
-        // 显示删除
-        dialogVisible: false,
+  },
+  data () {
+    return {
 
-        // 显示添加表单
-        dialogFormVisible: false,
-        formLabelWidth: '120px',
-        form: {
-          name: "",
-          region: ""
-        },
-        searchInput: {
-          id: "",
-          name: "",
-          phone: "",
-          blackList: ""
-        },
-        // tableData: [{
-        //   date: '2016-05-02',
-        //   name: '王小虎',
-        //   address: '上海市普陀区金沙江路 1518 弄',
-        // }, {
-        //   date: '2016-05-04',
-        //   name: '王小虎',
-        //   address: '上海市普陀区金沙江路 1518 弄'
-        // }, {
-        //   date: '2016-05-01',
-        //   name: '王小虎',
-        //   address: '上海市普陀区金沙江路 1518 弄',
-        // }, {
-        //   date: '2016-05-03',
-        //   name: '王小虎',
-        //   address: '上海市普陀区金沙江路 1518 弄'
-        // }],
-		 tableData: [{
-			 id: '2000001',
-			 amount: '10000',
-			 term: '5',
-			 job: '工程师',
-			 city: '北京市',
-			 parent_phone: '15963265478',
-			 colleague_phone: '156323654',
-			 company_phone: '15632548745',
-			 applicant: '100001',
-			 status: 'InProgress'
-		}],
-      }
+      // 显示删除
+      dialogVisible: false,
+
+      // 显示添加表单
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        name: '', region: ''
+      },
+      searchInput: { id: '',
+        name: '',
+        phone: '',
+        blackList: ''
+      },
+      // tableData: [{
+      //   date: '2016-05-02',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1518 弄',
+      // }, {
+      //   date: '2016-05-04',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1518 弄'
+      // }, {
+      //   date: '2016-05-01',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1518 弄',
+      // }, {
+      //   date: '2016-05-03',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1518 弄'
+      // }],
+      tableData: [{
+        id: '2000001',
+        amount: '10000',
+        term: '5',
+        job: '工程师',
+        city: '北京市',
+        parent_phone: '15963265478',
+        colleague_phone: '156323654',
+        company_phone: '15632548745',
+        applicant: '100001',
+        status: 'InProgress'
+      }]
     }
   }
+}
 </script>
 
 <style>

@@ -35,25 +35,25 @@
           </el-col>
         </el-row>
       </el-col>
-      <hr />
+      <hr/>
       <el-col style="margin-top: 20px;">
         <el-table :data="tableData" border style="width: 100%">
-  <!--        <el-table-column prop="date" label="日期" width="180">
+          <!--        <el-table-column prop="date" label="日期" width="180">
+                  </el-table-column>
+                  <el-table-column prop="name" label="姓名" width="180">
+                  </el-table-column>
+                  <el-table-column prop="address" label="地址">
+                  </el-table-column> -->
+          <el-table-column prop="pid" label="ID">
           </el-table-column>
-          <el-table-column prop="name" label="姓名" width="180">
+          <el-table-column prop="pname" label="姓名">
           </el-table-column>
-          <el-table-column prop="address" label="地址">
-          </el-table-column> -->
-		  <el-table-column prop="pid" label="ID">
-		  </el-table-column>
-		  <el-table-column prop="pname" label="姓名">
-		  </el-table-column>
-		  <el-table-column prop="psex" label="性别">
-		  </el-table-column>
-		  <el-table-column prop="pnumber" label="电话">
-		  </el-table-column>
-		  <el-table-column prop="pflag" label="状态">
-		  </el-table-column>
+          <el-table-column prop="psex" label="性别">
+          </el-table-column>
+          <el-table-column prop="pnumber" label="电话">
+          </el-table-column>
+          <el-table-column prop="pflag" label="状态">
+          </el-table-column>
           <el-table-column fixed="right" label="操作">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">他的进件</el-button>
@@ -85,69 +85,64 @@
     </el-dialog>
   </d2-container>
 
-
-
-
-
-
 </template>
 
 <script>
-  export default {
-    methods: {
-      createBtnClick() {
-        this.dialogFormVisible = true;
-      },
-      handleClick(row) {
-        console.log(row);
-        this.$router.push({
-          path: 'client-detail',
-          query: {
-            name: '张三'
-          }
-        });
-      },
-      handleDeleteClick(row) {
-        this.$confirm('确认删除？')
-          .then(_ => {
-            console.log("删除");
-          })
-          .catch(_ => {
-            console.log("取消");
-          });
-      }
-
+export default {
+  methods: {
+    createBtnClick () {
+      this.dialogFormVisible = true
     },
-    data() {
-      return {
+    handleClick (row) {
+      console.log(row)
+      this.$router.push({
+        path: 'client-detail',
+        query: {
+          name: '张三'
+        }
+      })
+    },
+    handleDeleteClick (row) {
+      this.$confirm('确认删除？')
+        .then(_ => {
+          console.log('删除')
+        })
+        .catch(_ => {
+          console.log('取消')
+        })
+    }
 
-        // 显示删除
-        dialogVisible: false,
+  },
+  data () {
+    return {
 
-        // 显示添加表单
-        dialogFormVisible: false,
-        formLabelWidth: '120px',
-        form: {
-          name: '',
-          region: ''
-        },
-        searchInput: {
-          id: '',
-          name: '',
-          phone: '',
-          blackList: ''
-        },
-        tableData: [{
-		  pid: '100001',
-		  pname: 'lisa',
-		  psex: 'female',
-		  pnumber: '15699666451',
-		  pflag: 'white'
-        }]
-      }
+      // 显示删除
+      dialogVisible: false,
+
+      // 显示添加表单
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        name: '',
+        region: ''
+      },
+      searchInput: {
+        id: '',
+        name: '',
+        phone: '',
+        blackList: ''
+      },
+      tableData: [{
+        pid: '100001',
+        pname: 'lisa',
+        psex: 'female',
+        pnumber: '15699666451',
+        pflag: 'white'
+      }]
     }
   }
-  </script>
+}
+</script>
 
 <style>
 </style>

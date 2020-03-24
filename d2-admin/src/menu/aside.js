@@ -23,7 +23,7 @@ export default [
     title: '系统设置',
     icon: 'windows',
     children: [
-      { path: '/page1', title: '页面 1' },
+      { path: '/emp-manage', title: '员工管理' },
       { path: '/page2', title: '页面 2' },
       { path: '/page3', title: '页面 3' }
     ]

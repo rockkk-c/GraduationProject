@@ -66,64 +66,59 @@
     </el-dialog>
   </d2-container>
 
-
-
-
-
-
 </template>
 
 <script>
-  export default {
-    methods: {
-      createBtnClick() {
-        this.dialogFormVisible = true;
-      },
-      handleClick(row) {
-        console.log(row);
-        this.$router.push({
-          path: 'client-detail',
-          query: {
-            name: '张三'
-          }
-        });
-      },
-      handleDeleteClick(row) {
-        this.$confirm('确认删除？')
-          .then(_ => {
-            console.log("删除");
-          })
-          .catch(_ => {
-            console.log("取消");
-          });
-      }
-
+export default {
+  methods: {
+    createBtnClick () {
+      this.dialogFormVisible = true
     },
-    data() {
-      return {
+    handleClick (row) {
+      console.log(row)
+      this.$router.push({
+        path: 'client-detail',
+        query: {
+          name: '张三'
+        }
+      })
+    },
+    handleDeleteClick (row) {
+      this.$confirm('确认删除？')
+        .then(_ => {
+          console.log('删除')
+        })
+        .catch(_ => {
+          console.log('取消')
+        })
+    }
 
-        // 显示删除
-        dialogVisible: false,
+  },
+  data () {
+    return {
 
-        // 显示添加表单
-        dialogFormVisible: false,
-        formLabelWidth: '120px',
-        form: {
-          name: '',
-          region: ''
-        },
-        searchInput: {
-          id: '',
-          flag: ''
-        },
-        tableData: [{
-          id: '000001',
-          number: '18756235478',
-					flag: 'white'
-        }]
-      }
+      // 显示删除
+      dialogVisible: false,
+
+      // 显示添加表单
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        name: '',
+        region: ''
+      },
+      searchInput: {
+        id: '',
+        flag: ''
+      },
+      tableData: [{
+        id: '000001',
+        number: '18756235478',
+        flag: 'white'
+      }]
     }
   }
+}
 </script>
 
 <style>

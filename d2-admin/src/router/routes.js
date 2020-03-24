@@ -57,6 +57,15 @@ const frameIn = [
         },
         component: _import('system/basic/number/number-manage')
       },
+      {
+        path: 'emp-manage',
+        name: 'emp-manage',
+        meta: {
+          title: '员工管理',
+          auth: true
+        },
+        component: _import('system/sys-setting/employee/emp-manage')
+      },
 
       // 系统 前端日志
       {

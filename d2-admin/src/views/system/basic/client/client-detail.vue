@@ -6,17 +6,15 @@
 </template>
 
 <script>
+export default {
 
-
-   export default {
-
-       methods:{
-         test(){
-           let s = this.$route.query.name;
-           console.log(s);
-         }
-       }
+  methods: {
+    test () {
+      let s = this.$route.query.name
+      console.log(s)
     }
+  }
+}
 </script>
 
 <style>
