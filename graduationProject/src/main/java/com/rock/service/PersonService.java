@@ -29,7 +29,7 @@ public class PersonService {
     @Autowired
     private FeatureDataMapper featureDataMapper;
     @Autowired
-    private PhoneService phoneService;
+    private PhService phoneService;
     @GraphQLMutation(name = "addPerson", description = "添加Person实体结点,同时添加Phone结点，并创建实体结点间关系")
     public Result addPerson(@GraphQLArgument(name = "person", description = "规则id")Person person){
 

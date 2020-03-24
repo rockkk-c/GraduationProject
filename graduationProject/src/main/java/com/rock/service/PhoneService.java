@@ -17,7 +17,7 @@ import java.util.Objects;
 @Service
 @GraphQLApi
 @Slf4j
-public class PService {
+public class PhoneService {
     @Autowired
     private PhoneRepository phoneRepository;
 

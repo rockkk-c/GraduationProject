@@ -8,7 +8,6 @@ import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
 import com.rock.python.PyInterface;
 import com.rock.python.PyResult;
-import com.rock.relationEntity.Apply;
 import com.rock.repository.ApplicantRepository;
 import com.rock.repository.PersonRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
