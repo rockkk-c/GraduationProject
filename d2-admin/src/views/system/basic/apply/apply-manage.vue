@@ -70,18 +70,55 @@
 
     </el-row>
 
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+    <el-dialog title="添加新的进件"  :visible.sync="dialogFormVisible" width="30%">
+      <el-form label-position="right" label-width="80px" :model="createFrom" :inline="true">
+        <el-form-item label="进件号">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+
+        <el-form-item label="金额">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
         </el-form-item>
+
+        <el-form-item label="期数">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="工作">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="城市">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="父母电话">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="同事电话">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="公司电话">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="申请人">
+          <el-input v-model="createFrom.name" style="width: 200px;"  placeholder="姓名"></el-input>
+        </el-form-item>
+
+
+        <el-form-item label="进件状态">
+          <el-switch
+            v-model="createFrom.value"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+          </el-switch>
+        </el-form-item>
+
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -134,23 +171,10 @@ export default {
         phone: '',
         blackList: ''
       },
-      // tableData: [{
-      //   date: '2016-05-02',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1518 弄',
-      // }, {
-      //   date: '2016-05-04',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1518 弄'
-      // }, {
-      //   date: '2016-05-01',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1518 弄',
-      // }, {
-      //   date: '2016-05-03',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1518 弄'
-      // }],
+      createFrom: {
+        name: '',
+        value:true
+      },
       tableData: [{
         id: '2000001',
         amount: '10000',
