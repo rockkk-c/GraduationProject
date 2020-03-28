@@ -284,4 +284,15 @@ public class ApplicantService {
     public int countOfApplicant(){
         return applicantRepository.countOfApplicant();
     }
+
+    @GraphQLQuery(name="allNullStatus",description = "所有Applicant.status为空的Applicant")
+    public List<Applicant> allNullStatus(){
+        return applicantRepository.allNullStatus();
+    }
+
+    @GraphQLQuery(name="selectNullStatus",description = "按条件查询Applicant.status为空的Applicant")
+    public  List<Applicant> selectNullStatus(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
+        return applicantRepository.selectNullStatus(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity(),
+                applicant.getApplicant());
+    }
 }

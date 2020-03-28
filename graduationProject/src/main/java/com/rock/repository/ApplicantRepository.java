@@ -122,4 +122,16 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
      **/
     @Query("MATCH (n:Applicant) return count(n)")
     int countOfApplicant();
+
+    /**
+     *  查询所有未检测Applicant
+     **/
+    @Query("MATCH (n:Applicant) where n.status IS NULL RETURN n")
+    List<Applicant> allNullStatus();
+    /**
+     *  按条件查询Applicant
+     **/
+    @Query("MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN n")
+    List<Applicant> selectNullStatus(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
+                                    @Param("job")String job,@Param("city")String city,@Param("applicant")String applicant);
 }
