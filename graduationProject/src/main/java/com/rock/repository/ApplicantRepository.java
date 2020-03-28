@@ -126,6 +126,8 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
     /**
      *  查询所有未检测Applicant
      **/
+//    @Query("MATCH (n:Applicant) where n.status ="" or n.status=~"(?i)NULL" RETURN n")
+//    List<Applicant> allNullStatus1();
     @Query("MATCH (n:Applicant) where n.status IS NULL RETURN n")
     List<Applicant> allNullStatus();
     /**
