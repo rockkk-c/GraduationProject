@@ -84,7 +84,15 @@ const frameIn = [
         },
         component: _import('system/sys-setting/employee/emp-manage')
       },
-
+      {
+        path: 'info-detection',
+        name: 'info-detection',
+        meta: {
+          title: '信息检测',
+          auth: true
+        },
+        component: _import('system/risk-control/info-detection/info-detection')
+      },
       // 系统 前端日志
       {
         path: 'log',
