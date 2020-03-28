@@ -280,4 +280,8 @@ public class ApplicantService {
     public Person selectPersonByApplicant(@GraphQLArgument(name="id",description = "Applicant.id")String id){
         return applicantRepository.selectPersonByApplicant(id);
     }
+    @GraphQLQuery(name="countOfApplicant",description = "首页显示-Applicant数量")
+    public int countOfApplicant(){
+        return applicantRepository.countOfApplicant();
+    }
 }

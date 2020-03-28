@@ -142,6 +142,9 @@ public class PersonService {
         }
         return true;
     }
-
+    @GraphQLQuery(name="countOfPerson",description = "首页显示-Person数量")
+    public int countOfPerson(){
+        return personRepository.countOfPerson();
+    }
 
 }

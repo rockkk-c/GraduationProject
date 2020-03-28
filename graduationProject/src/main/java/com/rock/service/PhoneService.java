@@ -86,6 +86,11 @@ public class PhoneService {
         }
 
     }
+    @GraphQLQuery(name="countOfPhone",description = "首页显示-Phone数量")
+    public int countOfPhone(){
+        return phoneRepository.countOfPhone();
+    }
+
 }
 
 

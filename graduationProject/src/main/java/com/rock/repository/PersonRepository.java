@@ -117,4 +117,12 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
      */
     @Query("MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return a")
     List<Applicant> selecApplicantByPId(@Param("id") String id);
+
+    /**
+     *  首页显示-Person数量
+     **/
+    @Query("MATCH (n:Person) return count(n)")
+    int countOfPerson();
+
 }
+

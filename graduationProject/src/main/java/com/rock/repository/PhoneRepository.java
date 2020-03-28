@@ -59,4 +59,10 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     @Query("MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n")
     Person selectPhoneOwner(@Param("number") String number);
 
+    /**
+     *  首页显示-Phone数量
+     **/
+    @Query("MATCH (n:Phone) return count(n)")
+    int countOfPhone();
+
 }
