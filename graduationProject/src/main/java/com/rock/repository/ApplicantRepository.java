@@ -23,7 +23,7 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
             "WHERE n.id =  a.applicant\n" +
             "merge (n)-[r:APPLY]->(a)")
     void createApply();
-    
+
     /*
     * 创建COLLEAGUE_PHONE关系
     * */
@@ -74,13 +74,46 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
     /**
      *  根据Applicant的id删除Applicant
      **/
-    @Query("MATCH (n:Applicant)-[r]-() WHERE n.id={applyId} delete r,n")
-    void deleteApplicantById(@Param("applyId") String applyId);
+    @Query("MATCH (n:Applicant)-[r]-() WHERE n.id={id} delete r,n")
+    void deleteApplicantById(@Param("id") String id);
 
     /**
      *  根据Applicant的id查询Applicant
      **/
-    @Query("MATCH (n:Applicant) WHERE n.id={applyId} RETURN n")
-    Applicant selectApplicantById(@Param("applyId") String applyId);
+    @Query("MATCH (n:Applicant) WHERE n.id={id} RETURN n")
+    Applicant selectApplicantById(@Param("id") String id);
 
+    /**
+     *  查询所有Applicant
+     **/
+    @Query("MATCH (n:Applicant) RETURN n")
+    List<Applicant> selectAllApplicant();
+    /**
+     *  按条件查询Applicant
+     **/
+    @Query("MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone}" +
+            "or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN n")
+    List<Applicant> selectApplicant(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
+                                    @Param("job")String job,@Param("city")String city,@Param("parent_phone")String parent_phone,
+                                    @Param("colleague_phone")String colleague_phone,@Param("company_phone")String company_phone,
+                                    @Param("status")String status);
+
+    /**
+     *  修改Applicant
+     **/
+    @Query("MATCH (n:Applicant)-[r1]-(p:Phone) where n.id={id} with r1,n,p match(p:Phone)-[r2]-()  " +
+            "with  r1,r2,n,p delete r1,r2,p return n")
+    void updateApplicant1(@Param("id")String id);
+    @Query("MATCH (n:Applicant) where n.id={id} set n.amount={amount},n.term={term},n.job={job},n.city={city},n.parent_phone={parent_phone}," +
+            "n.colleague_phone={colleague_phone},n.company_phone={company_phone},n.status={status} ")
+    void updateApplicant2(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
+                          @Param("job")String job,@Param("city")String city,@Param("parent_phone")String parent_phone,
+                          @Param("colleague_phone")String colleague_phone,@Param("company_phone")String company_phone,
+                          @Param("status")String status);
+
+    /**
+     *  查看Applicant的客户信息
+     **/
+    @Query("MATCH (n:Person)-[:APPLY]-(a:Applicant) where a.id={id} return n")
+    Person selectPersonByApplicant(@Param("id") String id);
 }

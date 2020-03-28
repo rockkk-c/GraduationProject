@@ -93,9 +93,9 @@ public class ApplicantService {
      *
      * @return
      */
-    @GraphQLQuery(name = "verifyTheOnlyApplicacnt", description = "检验featureData是否已经存在")
-    public boolean verifyTheOnlyApplicacnt(@GraphQLArgument(name = "applyId", description = "applyId") String applyId) {
-        if (Objects.isNull(this.applicantRepository.selectApplicantById(applyId))) {
+    @GraphQLQuery(name = "verifyTheOnlyApplicacnt", description = "检验Applicacnt是否已经存在")
+    public boolean verifyTheOnlyApplicacnt(@GraphQLArgument(name = "id", description = "id") String id) {
+        if (Objects.isNull(this.applicantRepository.selectApplicantById(id))) {
             return false;
         }
         return true;
@@ -128,8 +128,8 @@ public class ApplicantService {
         return list;
     }
     @GraphQLQuery(name = "invokePython", description = "调用python的http接口，返回预测结果")
-    public PyResult invokePython(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
-        List<Integer> list=BFPredict(applyId);
+    public PyResult invokePython(@GraphQLArgument(name = "id", description = "Applicant的id") String id) throws Exception {
+        List<Integer> list=BFPredict(id);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://127.0.0.1:8887/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -151,7 +151,7 @@ public class ApplicantService {
 
     @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
     public Result  addApplicant(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant){
-        if(!this.verifyTheOnlyApplicacnt(applicant.getId())){
+        if(this.verifyTheOnlyApplicacnt(applicant.getId())==true){
             return Result.error("此Applicant的id已存在，请重新输入");
         }
 
@@ -245,15 +245,39 @@ public class ApplicantService {
     }
 
     @GraphQLMutation(name = "deleteApplicantById", description = "根据Applicant的id删除Applicant")
-    public Result deleteApplicantById(@GraphQLArgument(name="applyId",description = "Applicant的id")String applyId){
-        if(!this.verifyTheOnlyApplicacnt(applyId)){
+    public Result deleteApplicantById(@GraphQLArgument(name="id",description = "Applicant的id")String id){
+        if(!this.verifyTheOnlyApplicacnt(id)){
             return Result.error("此进件不存在！");
-        }else if(StringUtil.isNullOrEmpty(applyId)){
+        }else if(StringUtil.isNullOrEmpty(id)){
             return Result.error("请选择要删除的进件！");
         }else {
-            applicantRepository.deleteApplicantById(applyId);
+            applicantRepository.deleteApplicantById(id);
             return Result.ok("删除成功");
         }
+    }
 
+    @GraphQLQuery(name="selectAllApplicant",description = "查询所有Applicant")
+    public List<Applicant> selectAllApplicant(){
+        return applicantRepository.selectAllApplicant();
+    }
+
+    @GraphQLQuery(name="selectApplicant",description = "按条件查询Applicant")
+    public List<Applicant> selectApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
+        return applicantRepository.selectApplicant(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity()
+        ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus());
+    }
+    @GraphQLMutation(name="updateApplicant",description = "修改Applicant")
+    public Result updateApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
+        applicantRepository.updateApplicant1(applicant.getId());
+        applicantRepository.updateApplicant2(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity()
+                ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus());
+        applicantRepository.createColleaguePhone();
+        applicantRepository.createCompanyPhone();
+        applicantRepository.createParentPhone();
+        return Result.ok("修改成功！");
+    }
+    @GraphQLQuery(name="selectPersonByApplicant",description = "查看客户")
+    public Person selectPersonByApplicant(@GraphQLArgument(name="id",description = "Applicant.id")String id){
+        return applicantRepository.selectPersonByApplicant(id);
     }
 }

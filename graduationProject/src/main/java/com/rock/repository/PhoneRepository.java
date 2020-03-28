@@ -1,5 +1,6 @@
 package com.rock.repository;
 
+import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,7 +18,7 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     Phone getPhoneByNumber(@Param("number") String number);
 
     /**
-     * 根据number查询Phone
+     * 根据flag查询Phone
      */
     @Query("match (n:Phone) where n.flag={flag} return n")
     List<Phone> loadListOfPhoneByFlag(@Param("flag") String flag);
@@ -31,7 +32,7 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 根据number删除Phone
      */
-    @Query("match ()-[r1]-(n:Phone)-[r]-() where n.number={number} delete r1,r,n")
+    @Query("match (n:Phone)-[r]-() where n.number={number} delete r,n")
     void deletePhoneByNumber(@Param("number") String number);
 
     /**
@@ -39,5 +40,23 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
      */
     @Query("MERGE(n:Phone {number:{number},flag :{flag}}) ")
     void addPhone(@Param("number") String number,@Param("flag") String flag);
+
+    /**
+     * 根据number或phone查询Phone
+     */
+    @Query("match (n:Phone) where n.flag={flag} or n.number={number} return n")
+    List<Phone> loadListOfPhone(@Param("flag") String flag,@Param("number") String number);
+
+    /**
+     * 查询所有phone
+     */
+    @Query("match (n:Phone) return n")
+    List<Phone> selectAllPhone();
+
+    /**
+     * 查看机主
+     */
+    @Query("MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n")
+    Person selectPhoneOwner(@Param("number") String number);
 
 }

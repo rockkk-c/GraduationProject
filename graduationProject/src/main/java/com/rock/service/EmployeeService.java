@@ -1,6 +1,7 @@
 package com.rock.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rock.entity.Employee;
 import com.rock.entity.Result;
 import com.rock.mapper.EmployeeMapper;
@@ -8,6 +9,7 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 @Service
 @GraphQLApi
-public class EmployeeService {
+public class EmployeeService  extends ServiceImpl<EmployeeMapper, Employee>{
     @Autowired
     private EmployeeMapper employeeMapper;
 
@@ -49,8 +51,10 @@ public class EmployeeService {
 
     @GraphQLMutation(name = "addEmployee", description = "添加工作人员")
     public Result addEmployee(@GraphQLArgument(name = "employee", description = "employee") Employee employee) {
-        employeeMapper.insert(employee);
-        return Result.ok("添加成功");
+        this.save(employee);
+        String id = employee.getId();
+        return Result.ok("添加成功！");
+
 
     }
 

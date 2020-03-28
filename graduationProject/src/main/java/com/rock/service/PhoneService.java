@@ -1,6 +1,7 @@
 package com.rock.service;
 
 import com.rock.entity.Result;
+import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
 import com.rock.repository.PhoneRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -45,14 +46,25 @@ public class PhoneService {
         }
         return true;
     }
-    @GraphQLQuery(name = "getPhoneByNumber", description = "通过号码查询Phone")
+ /*   @GraphQLQuery(name = "getPhoneByNumber", description = "通过号码查询Phone")
     public Phone getPhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number) {
         return phoneRepository.getPhoneByNumber(number);
+    }*/
+
+    @GraphQLQuery(name = "loadListOfPhone", description = "通过条件查询Phone")
+    public List<Phone> loadListOfPhone(@GraphQLArgument(name = "flag", description = "flag") String flag,
+                                             @GraphQLArgument(name = "number", description = "number") String number) {
+        return phoneRepository.loadListOfPhone(flag,number);
     }
 
-    @GraphQLQuery(name = "loadListOfPhoneByFlag", description = "通过号码查询Phone")
-    public List<Phone> loadListOfPhoneByFlag(@GraphQLArgument(name = "flag", description = "number") String flag) {
-        return phoneRepository.loadListOfPhoneByFlag(flag);
+    @GraphQLQuery(name = "selectAllPhone", description = "查看机主")
+    public List<Phone> selectAllPhone() {
+        return phoneRepository.selectAllPhone();
+    }
+
+    @GraphQLQuery(name = "selectPhoneOwner", description = "查询所有Phone")
+    public Person selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number) {
+        return phoneRepository.selectPhoneOwner(number);
     }
 
     @GraphQLMutation(name = "updatePhoneByNumber", description = "根据Phone的number修改其黑白名单状态")

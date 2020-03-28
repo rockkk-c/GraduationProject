@@ -18,8 +18,8 @@ public class Person {
     private String id;
     private String name;
     private String sex;
-    @Relationship(type = "HAS_PHONE", direction = Relationship.INCOMING)
-    private Phone phone;
+   // @Relationship(type = "HAS_PHONE", direction = Relationship.INCOMING)
+   // private Phone phone;
     private String number;
     private String flag;
 
