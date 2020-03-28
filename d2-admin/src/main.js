@@ -30,7 +30,7 @@ import VueApollo from 'vue-apollo'
 
 const httpLink = new HttpLink({
   // You should use an absolute URL here
-  uri: 'http://b6m36a.natappfree.cc/graphql'
+  uri: ' http://c2i68m.natappfree.cc/graphql'
 })
 
 // Create the apollo client
