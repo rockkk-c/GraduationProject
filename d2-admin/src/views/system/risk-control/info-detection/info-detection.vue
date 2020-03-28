@@ -133,7 +133,7 @@ export default {
     this.$apollo.query({
       // Query
       query: gql`query{
-               selectAllApplicant
+               allNullStatus
                       {
                            id,
                            amount,

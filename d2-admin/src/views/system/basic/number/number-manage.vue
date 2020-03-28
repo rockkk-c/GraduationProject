@@ -90,78 +90,78 @@
 </template>
 
 <script>
-  import gql from "graphql-tag"
-  export default {
-    methods: {
-      search() {
-        let This = this;
-        this.$apollo.query({
-          // Query
-          query: gql `query($flag:String!,$number:String!){
+import gql from 'graphql-tag'
+export default {
+  methods: {
+    search () {
+      let This = this
+      this.$apollo.query({
+        // Query
+        query: gql`query($flag:String!,$number:String!){
                   loadListOfPhone(flag:$flag,number:$number)
                          {
                              number,
                              flag
                          }
          }`,
-          variables: {
-            number: this.searchInput.number,
-            flag: this.searchInput.flag
-          }
-        }).then(res => {
-          console.log(res);
-          This.tableData = res.data.loadListOfPhone;
-        }).catch(error => {
-          console.log(error)
-        })
-      },
-      updateBtn(){
-          let This = this;
-          this.$apollo.mutate({
-            // Query
-            mutation: gql `mutation($number:String!,$flag:String!){
+        variables: {
+          number: this.searchInput.number,
+          flag: this.searchInput.flag
+        }
+      }).then(res => {
+        console.log(res)
+        This.tableData = res.data.loadListOfPhone
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    updateBtn () {
+      let This = this
+      this.$apollo.mutate({
+        // Query
+        mutation: gql`mutation($number:String!,$flag:String!){
                     updatePhoneByNumber(number:$number,flag:$flag)
                      {
                          code,
                          message
                      }
            }`,
-            variables: {
-              number: this.updateNumber,
-              flag: this.updateState ? "WHITE" : "BLACK"
-            }
-          }).then(res => {
-            if (res.data.updatePhoneByNumber.code == 0) {
-              this.$message({
-                message: '状态修改成功',
-                type: 'success'
-              });
-              for (let i = 0; i < This.tableData.length; i++) {
-                if (This.tableData[i].number == This.updateNumber) {
-                  // This.tableData[i] = This.updateState;
-                  break;
-                }
-              }
-            }
-            this.dialogUpdateFormVisible = false;
-          }).catch(error => {
-            console.log(error)
-          })
-      },
-      createBtn() {
-        var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (!myreg.test(this.form.number)) {
-          this.$message({
-            message: '号码输入格式有误',
-            type: 'error'
-          });
-          this.form.number = "";
-          return;
+        variables: {
+          number: this.updateNumber,
+          flag: this.updateState ? 'WHITE' : 'BLACK'
         }
+      }).then(res => {
+        if (res.data.updatePhoneByNumber.code === 0) {
+          this.$message({
+            message: '状态修改成功',
+            type: 'success'
+          })
+          for (let i = 0; i < This.tableData.length; i++) {
+            if (This.tableData[i].number === This.updateNumber) {
+              // This.tableData[i] = This.updateState;
+              break
+            }
+          }
+        }
+        this.dialogUpdateFormVisible = false
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    createBtn () {
+      var myreg = /^[1][3,4,5,7,8][0-9]{9}$/
+      if (!myreg.test(this.form.number)) {
+        this.$message({
+          message: '号码输入格式有误',
+          type: 'error'
+        })
+        this.form.number = ''
+        return
+      }
 
-        this.$apollo.mutate({
-          // Query
-          mutation: gql `mutation($number:String!,$flag:String!){
+      this.$apollo.mutate({
+        // Query
+        mutation: gql`mutation($number:String!,$flag:String!){
                  addPhone(phone:{
                    number:$number
                    flag:$flag
@@ -171,126 +171,124 @@
                      message
                  }
          }`,
-          variables: {
-            number: this.form.number,
-            flag: this.form.state ? "WHITE" : "BLACK"
-          }
-        }).then(res => {
-          if (res.data.addPhone.code == 0) {
-            this.$message({
-              message: '号码添加成功',
-              type: 'success'
-            });
-          }
-        }).catch(error => {
-          console.log(error)
-        })
-        this.dialogFormVisible = false;
-      },
-      createBtnClick() {
-        this.dialogFormVisible = true
-      },
-      handleClick(row) {
-        console.log(row)
-        this.$router.push({
-          path: 'number-detail',
-          query: {
-            name: '机主'
-          }
-        })
-      },
-      editState(row) {
-        console.log(row);
-        this.updateNumber = row.number;
-        this.updateState = row.flag == 'WHITE' ? true : false;
-        this.dialogUpdateFormVisible = true;
-      },
-      handleDeleteClick(row) {
-        let This = this;
-        this.$confirm('确认删除？')
-          .then(_ => {
-            this.$apollo.mutate({
-              // Query
-              mutation: gql `mutation($number:String!){
+        variables: {
+          number: this.form.number,
+          flag: this.form.state ? 'WHITE' : 'BLACK'
+        }
+      }).then(res => {
+        if (res.data.addPhone.code ===0) {
+          this.$message({
+            message: '号码添加成功',
+            type: 'success'
+          })
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+      this.dialogFormVisible = false
+    },
+    createBtnClick () {
+      this.dialogFormVisible = true
+    },
+    handleClick (row) {
+      console.log(row)
+      this.$router.push({
+        path: 'number-detail',
+        query: {
+          name: '机主'
+        }
+      })
+    },
+    editState (row) {
+      console.log(row)
+      this.updateNumber = row.number
+      this.updateState = row.flag === 'WHITE'
+      this.dialogUpdateFormVisible = true
+    },
+    handleDeleteClick (row) {
+      let This = this
+      this.$confirm('确认删除？')
+        .then(_ => {
+          this.$apollo.mutate({
+            // Query
+            mutation: gql`mutation($number:String!){
                      deletePhoneByNumber(number:$number)
                      {
                          code,
                          message
                      }
              }`,
-              variables: {
-                number: row.number,
-              }
-            }).then(res => {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-              for (let i = 0; i < This.tableData.length; i++) {
-                if (This.tableData[i].number == row.number) {
-                  This.tableData.splice(i, 1);
-                  break;
-                }
-              }
-            }).catch(error => {
-              console.log(error)
+            variables: {
+              number: row.number
+            }
+          }).then(res => {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
             })
-
-
+            for (let i = 0; i < This.tableData.length; i++) {
+              if (This.tableData[i].number == row.number) {
+                This.tableData.splice(i, 1)
+                break
+              }
+            }
+          }).catch(error => {
+            console.log(error)
           })
-          .catch(_ => {
-            console.log('取消')
-          })
-      }
+        })
+        .catch(_ => {
+          console.log('取消')
+        })
+    }
 
-    },
-    created() {
-      let This = this;
-      this.$apollo.query({
-        // Query
-        query: gql `query{
+  },
+  created () {
+    let This = this
+    this.$apollo.query({
+      // Query
+      query: gql`query{
                selectAllPhone
                       {
                           number,
                           flag
                       }
        }`,
-        variables: {
-          // role: this.role,
-        }
-      }).then(res => {
-        console.log(res);
-        This.tableData = res.data.selectAllPhone;
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    data() {
-      return {
-
-        // 编辑电话
-        updateNumber: "",
-        // 编辑状态
-        updateState: true,
-        // 显示删除
-        dialogVisible: false,
-        // 显示更新
-        dialogUpdateFormVisible: false,
-        // 显示添加表单
-        dialogFormVisible: false,
-        formLabelWidth: '80px',
-        form: {
-          number: '',
-          state: true
-        },
-        searchInput: {
-          number: '',
-          flag: ''
-        },
-        tableData: []
+      variables: {
+        // role: this.role,
       }
+    }).then(res => {
+      console.log(res)
+      This.tableData = res.data.selectAllPhone
+    }).catch(error => {
+      console.log(error)
+    })
+  },
+  data () {
+    return {
+
+      // 编辑电话
+      updateNumber: '',
+      // 编辑状态
+      updateState: true,
+      // 显示删除
+      dialogVisible: false,
+      // 显示更新
+      dialogUpdateFormVisible: false,
+      // 显示添加表单
+      dialogFormVisible: false,
+      formLabelWidth: '80px',
+      form: {
+        number: '',
+        state: true
+      },
+      searchInput: {
+        number: '',
+        flag: ''
+      },
+      tableData: []
     }
   }
+}
 </script>
 
 <style>

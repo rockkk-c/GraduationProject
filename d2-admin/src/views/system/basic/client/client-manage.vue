@@ -118,14 +118,14 @@
 </template>
 
 <script>
-  import gql from "graphql-tag"
+import gql from 'graphql-tag'
 export default {
   methods: {
-    search(){
-      let This = this;
+    search () {
+      let This = this
       this.$apollo.query({
         // Query
-        query: gql `query($id:String!,$name:String!,$sex:String!,$number:String!,$flag:String!){
+        query: gql`query($id:String!,$name:String!,$sex:String!,$number:String!,$flag:String!){
                 selectPerson(person:{
                  id:$id,
                  name:$name,
@@ -142,23 +142,23 @@ export default {
                  }
        }`,
         variables: {
-          id:this.searchInput.id,
-          name:this.searchInput.name,
-          sex:this.searchInput.sex,
-          number:this.searchInput.phone,
-          flag:this.searchInput.blackList
+          id: this.searchInput.id,
+          name: this.searchInput.name,
+          sex: this.searchInput.sex,
+          number: this.searchInput.phone,
+          flag: this.searchInput.blackList
         }
       }).then(res => {
-        console.log(res);
-        This.tableData = res.data.selectPerson;
+        console.log(res)
+        This.tableData = res.data.selectPerson
       }).catch(error => {
         console.log(error)
       })
     },
-    clickCreate(){
+    clickCreate () {
       this.$apollo.mutate({
         // Query
-        mutation: gql `mutation($id:String!,$name:String!,$sex:String!,$number:String!,$flag:String!){
+        mutation: gql`mutation($id:String!,$name:String!,$sex:String!,$number:String!,$flag:String!){
                addPerson(person:{
                  id:$id,
                  name:$name,
@@ -172,32 +172,32 @@ export default {
                }
        }`,
         variables: {
-          id:this.createFrom.id,
-          name:this.createFrom.name,
-          sex:this.createFrom.sex,
-          number:this.createFrom.phone,
-          flag:this.createFrom.state?'WHITE':'BLACK'
+          id: this.createFrom.id,
+          name: this.createFrom.name,
+          sex: this.createFrom.sex,
+          number: this.createFrom.phone,
+          flag: this.createFrom.state ? 'WHITE' : 'BLACK'
         }
       }).then(res => {
-        console.log(res);
-        if (res.data.addPerson.code == 0) {
+        console.log(res)
+        if (res.data.addPerson.code === 0) {
           this.$message({
             message: '客户添加成功',
             type: 'success'
-          });
-          
-          this.tableData.push( {
-          id:this.createFrom.id,
-          name:this.createFrom.name,
-          sex:this.createFrom.sex,
-          number:this.createFrom.phone,
-          flag:this.createFrom.state?'WHITE':'BLACK'
-        });
+          })
+
+          this.tableData.push({
+            id: this.createFrom.id,
+            name: this.createFrom.name,
+            sex: this.createFrom.sex,
+            number: this.createFrom.phone,
+            flag: this.createFrom.state ? 'WHITE' : 'BLACK'
+          })
         }
       }).catch(error => {
         console.log(error)
       })
-      this.dialogFormVisible = false;
+      this.dialogFormVisible = false
     },
     createBtnClick () {
       this.dialogFormVisible = true
@@ -222,11 +222,11 @@ export default {
     }
 
   },
-  created() {
-    let This = this;
+  created () {
+    let This = this
     this.$apollo.query({
       // Query
-      query: gql `query{
+      query: gql`query{
              selectAllPerson
                     {
                         id,
@@ -240,7 +240,7 @@ export default {
         // role: this.role,
       }
     }).then(res => {
-      this.tableData = res.data.selectAllPerson;
+      this.tableData = res.data.selectAllPerson
     }).catch(error => {
       console.log(error)
     })
@@ -255,27 +255,21 @@ export default {
       dialogFormVisible: false,
       formLabelWidth: '120px',
       createFrom: {
-        id:"",
+        id: '',
         name: '',
-        sex:"MALE",
-        phone:"",
-        state:true
+        sex: 'MALE',
+        phone: '',
+        state: true
 
       },
       searchInput: {
         id: '',
         name: '',
-        sex:"",
+        sex: '',
         phone: '',
         blackList: ''
       },
-      tableData: [{
-        id: '100001',
-        name: 'lisa',
-        sex: 'female',
-        number: '15699666451',
-        flag: 'white'
-      }]
+      tableData: []
     }
   }
 }
