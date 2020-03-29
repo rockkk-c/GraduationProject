@@ -6,7 +6,11 @@ import d2admin from './modules/d2admin'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  state:{
+    role:""
+  },
   modules: {
+
     d2admin
   }
 })

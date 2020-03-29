@@ -7,6 +7,8 @@ import d2Admin from '@/plugin/d2admin'
 // store
 import store from '@/store/index'
 
+Vue.prototype.$store = store
+
 // 菜单和路由设置
 import router from './router'
 import menuHeader from '@/menu/header'
@@ -28,7 +30,7 @@ import VueApollo from 'vue-apollo'
 
 const httpLink = new HttpLink({
   // You should use an absolute URL here
-  uri: 'http://8735cs.natappfree.cc/graphql'
+  uri: ' http://c2i68m.natappfree.cc/graphql'
 })
 
 // Create the apollo client
