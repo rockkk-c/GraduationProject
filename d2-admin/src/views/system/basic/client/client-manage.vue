@@ -203,11 +203,10 @@ export default {
       this.dialogFormVisible = true
     },
     handleClick (row) {
-      console.log(row)
       this.$router.push({
         path: 'client-detail',
         query: {
-          name: '张三'
+          id: '20000001'
         }
       })
     },

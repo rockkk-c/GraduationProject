@@ -70,8 +70,8 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">风险预测</el-button>
-              <el-button type="text" size="small" @click="editState(scope.row)">编辑</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small">信息检测</el-button>
+              <el-button type="danger"  size="small" @click="handleUpdateClick(scope.row)">通过检测</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -129,12 +129,41 @@ export default {
       })
     }
   },
+  handleUpdateClick (row) {
+    this.$confirm('确认通过信息检测（确认后不可修改）？')
+      .then(_ => {
+        this.$apollo.mutate({
+          // Query
+          mutation: gql`mutation($id:String!){
+                     updateApplyInfoTest(id:$id)
+                     {
+                         code,
+                         message
+                     }
+             }`,
+          variables: {
+            id: row.id
+          }
+        }).then(res => {
+          if (res.data.updateApplyInfoTest.code === 0) {
+            this.$message({
+              message: '通过信息检测',
+              type: 'success'
+            })
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      })
+      .catch(_ => {
+        console.log('取消')
+      })
+  },
   created () {
     let This = this
     this.$apollo.query({
-      // Query
       query: gql`query{
-               allNullStatus
+               selectThroughInfoTest
                       {
                            id,
                            amount,
@@ -153,7 +182,7 @@ export default {
       }
     }).then(res => {
       console.log(res)
-      This.tableData = res.data.allNullStatus
+      This.tableData = res.data.selectThroughInfoTest
     }).catch(error => {
       console.log(error)
     })

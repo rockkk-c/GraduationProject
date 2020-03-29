@@ -130,31 +130,26 @@ export default {
     }
   },
   handleUpdateClick (row) {
-    let This = this
-    this.$confirm('确认删除？')
+    this.$confirm('确认通过信息检测（确认后不可修改）？')
       .then(_ => {
         this.$apollo.mutate({
           // Query
-          mutation: gql`mutation($number:String!){
-                     deletePhoneByNumber(number:$number)
+          mutation: gql`mutation($id:String!){
+                     updateApplyInfoTest(id:$id)
                      {
                          code,
                          message
                      }
              }`,
           variables: {
-            number: row.number
+            id: row.id
           }
         }).then(res => {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          for (let i = 0; i < This.tableData.length; i++) {
-            if (This.tableData[i].number === row.number) {
-              This.tableData.splice(i, 1)
-              break
-            }
+          if (res.data.updateApplyInfoTest.code === 0) {
+            this.$message({
+              message: '通过信息检测',
+              type: 'success'
+            })
           }
         }).catch(error => {
           console.log(error)
@@ -163,13 +158,10 @@ export default {
       .catch(_ => {
         console.log('取消')
       })
-  }
-
-},
+  },
   created () {
     let This = this
     this.$apollo.query({
-      // Query
       query: gql`query{
                allNullStatus
                       {
