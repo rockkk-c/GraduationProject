@@ -299,12 +299,12 @@ public class ApplicantService {
     public List<Applicant> selectThroughInfoTest(){
         return applicantRepository.selectThroughInfoTest("ThroughInfoTest");
     }
-    @GraphQLQuery(name="updateApplyInfoTest",description = "将Applicant状态改为通过信息检测")
+    @GraphQLMutation(name="updateApplyInfoTest",description = "将Applicant状态改为通过信息检测")
     public Result updateApplyInfoTest(@GraphQLArgument(name="id",description = "id")String id){
         applicantRepository.updateApplyRiskStatus(id,"ThroughInfoTest");
         return Result.ok("修改成功");
     }
-    @GraphQLQuery(name="updateApplyRiskStatus",description = "将Applicant状态改为通过风险预测,进件进入到申请中状态")
+    @GraphQLMutation(name="updateApplyRiskStatus",description = "将Applicant状态改为通过风险预测,进件进入到申请中状态")
     public Result updateApplyRiskStatus(@GraphQLArgument(name="id",description = "id")String id){
         applicantRepository.updateApplyRiskStatus(id,"IN_PROGREESS");
         return Result.ok("修改成功");
