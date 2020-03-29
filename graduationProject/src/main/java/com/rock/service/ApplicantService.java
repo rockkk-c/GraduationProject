@@ -295,4 +295,14 @@ public class ApplicantService {
         return applicantRepository.selectNullStatus(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity(),
                 applicant.getApplicant());
     }
+    @GraphQLQuery(name="selectThroughInfoTest",description = "按状态查询-查询通过信息检测的Applicant")
+    public List<Applicant> selectThroughInfoTest(){
+        return applicantRepository.selectThroughInfoTest("ThroughInfoTest");
+    }
+    @GraphQLQuery(name="updateApplyRiskStatus",description = "将Applicant状态改为通过信息检测/风险预测")
+    public Result updateApplyRiskStatus(@GraphQLArgument(name="id",description = "id")String id,
+                                        @GraphQLArgument(name="status",description = "status")String status){
+        applicantRepository.updateApplyRiskStatus(id,status);
+        return Result.ok("修改成功");
+    }
 }

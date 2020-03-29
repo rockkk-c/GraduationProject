@@ -136,4 +136,16 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
     @Query("MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN n")
     List<Applicant> selectNullStatus(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
                                     @Param("job")String job,@Param("city")String city,@Param("applicant")String applicant);
+
+    /**
+     *  按状态查询-查询通过信息检测的Applicant
+     **/
+    @Query("MATCH (n:Applicant) where n.status={status} RETURN n")
+    List<Applicant> selectThroughInfoTest(@Param("status")String status);
+    /**
+     *  将Applicant状态改为通过信息检测/风险预测
+     **/
+    @Query("MATCH (n:Applicant) where n.id={id} set n.status={status} RETURN n")
+    void updateApplyRiskStatus(@Param("id") String id,@Param("status")String status);
+
 }
