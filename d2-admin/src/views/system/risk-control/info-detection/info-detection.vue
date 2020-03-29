@@ -71,7 +71,7 @@
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">信息检测</el-button>
-              <el-button type="text" size="small" @click="editState(scope.row)">编辑</el-button>
+              <el-button type="danger"  size="small" @click="handleUpdateClick(scope.row)">通过检测</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -129,13 +129,43 @@ export default {
       })
     }
   },
+  handleUpdateClick (row) {
+    let This = this
+    this.$confirm('确认删除？')
+      .then(_ => {
+        this.$apollo.mutate({
+          // Query
+          mutation: gql`mutation($number:String!){
+                     deletePhoneByNumber(number:$number)
+                     {
+                         code,
+                         message
+                     }
+             }`,
+          variables: {
+            number: row.number
+          }
+        }).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          for (let i = 0; i < This.tableData.length; i++) {
+            if (This.tableData[i].number === row.number) {
+              This.tableData.splice(i, 1)
+              break
+            }
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      })
+      .catch(_ => {
+        console.log('取消')
+      })
+  }
 
-  editState (row) {
-    console.log(row)
-    this.updateID = row.id
-    this.updateState = row.flag
-    this.dialogUpdateFormVisible = true
-  },
+},
   created () {
     let This = this
     this.$apollo.query({
