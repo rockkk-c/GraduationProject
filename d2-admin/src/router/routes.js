@@ -93,6 +93,15 @@ const frameIn = [
         },
         component: _import('system/risk-control/info-detection/info-detection')
       },
+      {
+        path: 'risk-predict',
+        name: 'risk-predict',
+        meta: {
+          title: '风险预测',
+          auth: true
+        },
+        component: _import('system/risk-control/risk-predict/risk-predict')
+      },
       // 系统 前端日志
       {
         path: 'log',

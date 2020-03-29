@@ -176,7 +176,7 @@ export default {
           flag: this.form.state ? 'WHITE' : 'BLACK'
         }
       }).then(res => {
-        if (res.data.addPhone.code ===0) {
+        if (res.data.addPhone.code === 0) {
           this.$message({
             message: '号码添加成功',
             type: 'success'
@@ -227,7 +227,7 @@ export default {
               type: 'success'
             })
             for (let i = 0; i < This.tableData.length; i++) {
-              if (This.tableData[i].number == row.number) {
+              if (This.tableData[i].number === row.number) {
                 This.tableData.splice(i, 1)
                 break
               }

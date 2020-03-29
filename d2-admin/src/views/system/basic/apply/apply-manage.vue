@@ -268,15 +268,15 @@ export default {
         }
 }`,
       variables: {
-        id: this.searchInput.id,
-        amount: this.searchInput.amount,
-        term: this.searchInput.term,
-        job: this.searchInput.job,
-        city: this.searchInput.city,
-        parent_phone: this.searchInput.parent_phone,
-        colleague_phone: this.searchInput.colleague_phone,
-        company_phone: this.searchInput.company_phone,
-        applicant: this.searchInput.applicant
+        id: this.createFrom.id,
+        amount: this.createFrom.amount,
+        term: this.createFrom.term,
+        job: this.createFrom.job,
+        city: this.createFrom.city,
+        parent_phone: this.createFrom.parent_phone,
+        colleague_phone: this.createFrom.colleague_phone,
+        company_phone: this.createFrom.company_phone,
+        applicant: this.createFrom.applicant
       }
     }).then(res => {
       if (res.data.addApplicant.code === 0) {

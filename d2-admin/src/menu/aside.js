@@ -15,7 +15,7 @@ export default [
     icon: 'wpexplorer',
     children: [
       { path: '/info-detection', title: '信息检测', icon: '' },
-      { path: '/page2', title: '页面 2', icon: '' },
+      { path: '/risk-predict', title: '风险预测', icon: '' },
       { path: '/page3', title: '页面 3', icon: '' }
     ]
   },

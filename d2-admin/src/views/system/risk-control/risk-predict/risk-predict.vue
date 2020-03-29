@@ -70,7 +70,7 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">信息检测</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small">风险预测</el-button>
               <el-button type="text" size="small" @click="editState(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
@@ -128,13 +128,6 @@ export default {
         }
       })
     }
-  },
-
-  editState (row) {
-    console.log(row)
-    this.updateID = row.id
-    this.updateState = row.flag
-    this.dialogUpdateFormVisible = true
   },
   created () {
     let This = this
