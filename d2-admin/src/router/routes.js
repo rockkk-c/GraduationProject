@@ -94,6 +94,15 @@ const frameIn = [
         component: _import('system/risk-control/info-detection/info-detection')
       },
       {
+        path: 'detection-result',
+        name: 'detection-result',
+        meta: {
+          title: '信息检测结果',
+          auth: true
+        },
+        component: _import('system/risk-control/info-detection/detection-result')
+      },
+      {
         path: 'risk-predict',
         name: 'risk-predict',
         meta: {

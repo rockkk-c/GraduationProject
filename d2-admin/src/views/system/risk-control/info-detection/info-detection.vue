@@ -79,16 +79,7 @@
 
     </el-row>
 
-    <el-dialog title="虚假信息检测"  :visible.sync="dialogFormVisible" width="30%">
-      <el-form label-position="right" label-width="80px" :model="createFrom" :inline="true">
 
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-      </div>
-    </el-dialog>
   </d2-container>
 
 </template>
@@ -101,20 +92,38 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($flag:String!,$number:String!){
-                  loadListOfPhone(flag:$flag,number:$number)
-                         {
-                             number,
-                             flag
-                         }
-         }`,
+        query: gql`query($id:String!,$amount:String!,$term:String!,$job:String!,$city:String!,$applicant:String!){
+                  selectApplicant(applicant:{
+                  id:$id,
+                  amount:$amount,
+                  term:$term,
+                  job:$job,
+                  city:$city,
+                  applicant:$applicant
+              }){
+              id,
+              amount,
+              term,
+              job,
+              city,
+              parent_phone,
+              colleague_phone,
+              company_phone,
+              applicant,
+              status
+              }
+             }`,
         variables: {
-          number: this.searchInput.number,
-          flag: this.searchInput.flag
+          id: this.searchInput.id,
+          amount: this.searchInput.amount,
+          term: this.searchInput.term,
+          job: this.searchInput.job,
+          city: this.searchInput.city,
+          status: this.searchInput.status
         }
       }).then(res => {
         console.log(res)
-        This.tableData = res.data.loadListOfPhone
+        This.tableData = res.data.selectApplicant
       }).catch(error => {
         console.log(error)
       })
@@ -122,42 +131,42 @@ export default {
     handleClick (row) {
       console.log(row)
       this.$router.push({
-        path: 'number-detail',
+        path: 'detection-result',
         query: {
-          name: '机主'
+          id: row.id
         }
       })
-    }
-  },
-  handleUpdateClick (row) {
-    this.$confirm('确认通过信息检测（确认后不可修改）？')
-      .then(_ => {
-        this.$apollo.mutate({
-          // Query
-          mutation: gql`mutation($id:String!){
+    },
+    handleUpdateClick (row) {
+      this.$confirm('确认通过信息检测（确认后不可修改）？')
+        .then(_ => {
+          this.$apollo.mutate({
+            // Query
+            mutation: gql`mutation($id:String!){
                      updateApplyInfoTest(id:$id)
                      {
                          code,
                          message
                      }
              }`,
-          variables: {
-            id: row.id
-          }
-        }).then(res => {
-          if (res.data.updateApplyInfoTest.code === 0) {
-            this.$message({
-              message: '通过信息检测',
-              type: 'success'
-            })
-          }
-        }).catch(error => {
-          console.log(error)
+            variables: {
+              id: row.id
+            }
+          }).then(res => {
+            if (res.data.updateApplyInfoTest.code === 0) {
+              this.$message({
+                message: '通过信息检测',
+                type: 'success'
+              })
+            }
+          }).catch(error => {
+            console.log(error)
+          })
         })
-      })
-      .catch(_ => {
-        console.log('取消')
-      })
+        .catch(_ => {
+          console.log('取消')
+        })
+    }
   },
   created () {
     let This = this
@@ -190,24 +199,18 @@ export default {
   data () {
     return {
 
-      // 编辑电话
-      updateNumber: '',
-      // 编辑状态
-      updateState: true,
-      // 显示删除
-      dialogVisible: false,
       // 显示更新
       dialogUpdateFormVisible: false,
       // 显示添加表单
       dialogFormVisible: false,
       formLabelWidth: '80px',
-      form: {
-        number: '',
-        state: true
-      },
       searchInput: {
-        number: '',
-        flag: ''
+        id: '',
+        amount: '',
+        term: '',
+        job: '',
+        city: '',
+        applicant: ''
       },
       tableData: []
     }

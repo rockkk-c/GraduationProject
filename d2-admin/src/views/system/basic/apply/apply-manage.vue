@@ -205,9 +205,9 @@ export default {
     handleClick (row) {
       console.log(row)
       this.$router.push({
-        path: 'apply-detail',
+        path: 'client-detail',
         query: {
-          name: 'xxx'
+          id: row.id
         }
       })
     },
