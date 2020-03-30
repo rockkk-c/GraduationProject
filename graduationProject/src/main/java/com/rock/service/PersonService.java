@@ -124,7 +124,12 @@ public class PersonService {
         //return CollectionUtils.arrayToList( personRepository.fakeInfoCheck(applyId) );
         return personRepository.fakeInfoCheck(id);
     }
+    @GraphQLQuery(name = "fakeInfoCheck", description = "不同申请人有相同的电话")
+    public int fakeInfoCheckCount(@GraphQLArgument(name = "id", description = "id")String id){
 
+        //return CollectionUtils.arrayToList( personRepository.fakeInfoCheck(applyId) );
+        return personRepository.fakeInfoCheckCount(id);
+    }
     @GraphQLQuery(name = "getPersonById", description = "根据id查询Person")
     public Person getPersonById(@GraphQLArgument(name = "applyId", description = "applyId")String applyId){
         //return CollectionUtils.arrayToList( personRepository.fakeInfoCheck(applyId) );

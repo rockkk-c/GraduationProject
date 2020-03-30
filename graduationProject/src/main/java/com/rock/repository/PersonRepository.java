@@ -56,7 +56,7 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     /*
      * 不同申请人有相同的电话返回count
      */
-    @Query("match (a1:Applicant)<-[]-(p1:Person)-[:HAS_PHONE]->(:Phone)<-[:HAS_PHONE]-(p:Person)-[]->(a:Applicant) where  a1.id={id} return count(p)+1")
+    @Query("match (a1:Applicant)<-[]-(p1:Person)-[:HAS_PHONE]->(:Phone)<-[:HAS_PHONE]-(p:Person)-[]->(a:Applicant) where  a1.id={id} return count(p)")
     int fakeInfoCheckCount(@Param("id") String id);
 
     /*
