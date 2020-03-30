@@ -114,7 +114,7 @@ public class ApplicantService {
         return Result.ok("得到特征数值表成功");
     }
 
-    @GraphQLQuery(name = "BFPredict", description = "仅获取7个特征值，用来预测")
+    @GraphQLQuery(name = "BFPredict", description = "仅获取7个特征值，用来预测,训练模型用，实际项目不用这个接口")
     public List<Integer> BFPredict(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
         int[] features=new int[7];
         List<Integer> list=new ArrayList<>();
