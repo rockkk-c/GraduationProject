@@ -42,58 +42,11 @@
 import gql from 'graphql-tag'
 export default {
   methods: {
-    clickCreate () {
-      this.$apollo.mutate({
-        // Query
-        mutation: gql`mutation($id:String!,$name:String!,$sex:String!,$number:String!,$flag:String!){
-               addPerson(person:{
-                 id:$id,
-                 name:$name,
-                 sex:$sex,
-                 number:$number,
-                 flag:$flag,
-               })
-               {
-                   code,
-                   message
-               }
-       }`,
-        variables: {
-          id: this.createFrom.id,
-          name: this.createFrom.name,
-          sex: this.createFrom.sex,
-          number: this.createFrom.phone,
-          flag: this.createFrom.state ? 'WHITE' : 'BLACK'
-        }
-      }).then(res => {
-        console.log(res)
-        if (res.data.addPerson.code === 0) {
-          this.$message({
-            message: '客户添加成功',
-            type: 'success'
-          })
-
-          this.tableData.push({
-            id: this.createFrom.id,
-            name: this.createFrom.name,
-            sex: this.createFrom.sex,
-            number: this.createFrom.phone,
-            flag: this.createFrom.state ? 'WHITE' : 'BLACK'
-          })
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-      this.dialogFormVisible = false
-    },
-    createBtnClick () {
-      this.dialogFormVisible = true
-    },
     handleClick (row) {
       this.$router.push({
         path: 'client-detail',
         query: {
-          id: '20000001'
+          id: row.id
         }
       })
     },
@@ -109,7 +62,7 @@ export default {
 
   },
   created () {
-    let This = this
+    console.log(this.$route.query.id)
     this.$apollo.query({
       // Query
       query: gql`query($id:String!){
@@ -155,7 +108,8 @@ export default {
         phone: '',
         blackList: ''
       },
-      tableData: []
+      tableData: [],
+      id: ''
     }
   }
 }
