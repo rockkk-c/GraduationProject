@@ -62,9 +62,10 @@ export default {
 
   },
   created () {
-    console.log(this.$route.query.id)
+    let id = this.$route.query.id
     this.$apollo.query({
       // Query
+
       query: gql`query($id:String!){
              fakeInfoCheck(id:$id)
                     {
@@ -76,7 +77,7 @@ export default {
                     }
      }`,
       variables: {
-        id: this.$route.query.id
+        id: id
       }
     }).then(res => {
       this.tableData = res.data.fakeInfoCheck

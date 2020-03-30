@@ -111,6 +111,16 @@ const frameIn = [
         },
         component: _import('system/risk-control/risk-predict/risk-predict')
       },
+      //  风险预测结果
+      {
+        path: 'predict-result',
+        name: 'predict-result',
+        meta: {
+          title: '风险预测结果',
+          auth: true
+        },
+        component: _import('system/risk-control/risk-predict/predict-result')
+      },
       // 系统 前端日志
       {
         path: 'log',

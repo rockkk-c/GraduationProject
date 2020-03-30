@@ -129,7 +129,7 @@ export default {
       })
     },
     handleClick (row) {
-      console.log(row)
+      console.log(row.id)
       this.$router.push({
         path: 'detection-result',
         query: {
@@ -154,6 +154,7 @@ export default {
             }
           }).then(res => {
             if (res.data.updateApplyInfoTest.code === 0) {
+              this.deleteTableData(row.id)
               this.$message({
                 message: '通过信息检测',
                 type: 'success'
@@ -166,6 +167,14 @@ export default {
         .catch(_ => {
           console.log('取消')
         })
+    },
+    deleteTableData (id) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === id) {
+          this.tableData.splice(i, 1)
+          break
+        }
+      }
     }
   },
   created () {
