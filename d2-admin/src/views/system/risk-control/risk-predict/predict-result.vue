@@ -3,8 +3,10 @@
     <h1>信息检测结果</h1>
 <!--    <h1 style="color:red; width:70%;float:right;font-size:80px;" >{{predictResult}}</h1>-->
 <!--    <h2 style="color:red; width:30%;float:left">预测结果（0代表高风险，1代表低风险）：</h2>-->
+    <div style="display:flex">
     <h2 style="color:red; ">预测结果（0代表高风险，1代表低风险）：</h2>
-    <div style="float:right;height:150px;width:70%;background-color: #67C23A"><h1 style="color:red;font-size: 50px " >{{predictResult}}</h1></div>
+   <div style="color:red;font-size: 77px ;margin-left: 100px;" >{{predictResult}}</div>
+    </div>
     <h3 style="color:dodgerblue">结果分析如下：</h3>
     <h3 >{{clientBF}}</h3>
     <h3 >{{clientPhoneBF}}</h3>
