@@ -16,6 +16,9 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     */
     @Query("match (a1:Applicant)<-[]-(:Person)-[]->(a:Applicant) where a1.id={applyId} and a.status=\"OVERDUE\" return count(a)")
     int getoverdueCountByApplyId(@Param("applyId") String applyId);
+   //进件的申请人之前的逾期数-详情
+    @Query("match (a1:Applicant)<-[]-(:Person)-[]->(a:Applicant) where a1.id={applyId} and a.status=\"OVERDUE\" return a")
+    List<Applicant> overdueDetails(@Param("applyId") String applyId);
 
     /*
      * 进件的申请人为黑名单状态
@@ -23,36 +26,48 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     @Query("match (a1:Applicant)<-[]-(p:Person) where a1.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getBFlagCountByApplyId(@Param("applyId") String applyId);
 
+
     /*
      * 进件的申请人手机号处于黑名单状态
      */
     @Query("match (a:Applicant)<-[]-(:Person)-[:HAS_PHONE]-(p:phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getPhoneBFlagCountByApplyId(@Param("applyId") String applyId);
 
+
     /*
      * 一维关系中触碰黑名单的人的个数
      */
     @Query("match (a:Applicant)<-[]-(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getOneDimenRelationshipBFCountByApplyId(@Param("applyId") String applyId);
+    //一维关系中触碰黑名单的人-详情
+    @Query("match (a:Applicant)<-[]-(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return p")
+    List<Person> OneDimenRelationshipBFDetails(@Param("applyId") String applyId);
 
     /*
      * 一维关系中触碰黑名单的电话的个数
      */
     @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getOneDimenRelationshipPhoneBFCountByApplyId(@Param("applyId") String applyId);
-
+    //一维关系中触碰黑名单的电话-详情
+    @Query("match (a:Applicant)<-[]-(:Person)-[]->(n:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return n")
+    List<Person> OneDimenRelationshipPhoneBFDetails(@Param("applyId") String applyId);
     /*
      * 二维关系中触碰黑名单的人的个数
      */
     @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getTwoDimenRelationshipBFCountByApplyId(@Param("applyId") String applyId);
+    //二维关系中触碰黑名单的人-详情
+    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return p")
+    List<Person> TwoDimenRelationshipBFDetails(@Param("applyId") String applyId);
 
     /*
      * 二维关系中触碰黑名单的电话的个数
      */
     @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getTwoDimenRelationshipPhoneBFCountByApplyId(@Param("applyId") String applyId);
-
+    //二维关系中触碰黑名单的电话-详情
+    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(n:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return n")
+    List<Person> TwoDimenRelationshipPhoneBFDetals(@Param("applyId") String applyId);
     /*
      * 不同申请人有相同的电话返回count
      */

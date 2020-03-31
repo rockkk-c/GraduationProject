@@ -8,7 +8,6 @@ import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
 import com.rock.python.PyInterface;
 import com.rock.python.PyResult;
-import com.rock.relationEntity.Apply;
 import com.rock.repository.ApplicantRepository;
 import com.rock.repository.PersonRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -24,10 +23,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @GraphQLApi
@@ -127,6 +123,63 @@ public class ApplicantService {
         list.add(personRepository.getTwoDimenRelationshipPhoneBFCountByApplyId(applyId));
         return list;
     }
+    /**
+     *
+     *  预测结果分析-----------------start
+     * */
+    @GraphQLQuery(name = "overdueDetails", description = "1.预测结果分析表单-逾期详情")
+    public List<Applicant> overdueDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.overdueDetails(applyId);
+    }
+    @GraphQLQuery(name = "OneDimenRelationshipBFDetails", description = "4.预测结果分析表单一维关系中触碰黑名单的人-详情")
+    public List<Person> OneDimenRelationshipBFDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.OneDimenRelationshipBFDetails(applyId);
+    }
+    @GraphQLQuery(name = "OneDimenRelationshipPhoneBFDetails", description = "5.预测结果分析表单，一维关系中触碰黑名单的电话-详情")
+    public List<Person> OneDimenRelationshipPhoneBFDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.OneDimenRelationshipPhoneBFDetails(applyId);
+    }
+    @GraphQLQuery(name = "TwoDimenRelationshipBFDetails", description = "6.预测结果分析表单-二维关系中触碰黑名单的人-详情")
+    public List<Person> TwoDimenRelationshipBFDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.TwoDimenRelationshipBFDetails(applyId);
+    }
+    @GraphQLQuery(name = "TwoDimenRelationshipPhoneBFDetals", description = "7.预测结果分析表单-二维关系中触碰黑名单的电话-详情")
+    public List<Person> TwoDimenRelationshipPhoneBFDetals(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.TwoDimenRelationshipPhoneBFDetals(applyId);
+    }
+
+    @GraphQLQuery(name = "resultDetails", description = "预测结果分析表单-详情")
+    public Map<String,Object> resultDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        List<Integer> list=this.BFPredict(applyId);
+        Map<String,Object> map = new HashMap<>();
+        if(list.get(0)!=0){
+            map.put("overdueDetails",this.overdueDetails(applyId));
+
+        }
+        if(list.get(1)!=0){
+            map.put("feature2","此客户处于黑名单");
+        }
+        if(list.get(2)!=0){
+            map.put("feature2","此客户手机号处于黑名单");
+        }
+        if(list.get(3)!=0){
+            map.put("OneDimenRelationshipBFDetails",this.OneDimenRelationshipBFDetails(applyId));
+        }
+        if(list.get(4)!=0){
+            map.put("OneDimenRelationshipPhoneBFDetails",this.OneDimenRelationshipPhoneBFDetails(applyId));
+        }
+        if(list.get(5)!=0){
+            map.put("TwoDimenRelationshipBFDetails",this.TwoDimenRelationshipBFDetails(applyId));
+        }
+        if(list.get(6)!=0){
+            map.put("TwoDimenRelationshipPhoneBFDetals",this.TwoDimenRelationshipPhoneBFDetals(applyId));
+        }
+        return map;
+    }
+    /**
+     *
+     *  预测结果分析-----------------end
+    * */
     @GraphQLQuery(name = "invokePython", description = "调用python的http接口，返回预测结果")
     public PyResult invokePython(@GraphQLArgument(name = "id", description = "Applicant的id") String id) throws Exception {
         List<Integer> list=BFPredict(id);
