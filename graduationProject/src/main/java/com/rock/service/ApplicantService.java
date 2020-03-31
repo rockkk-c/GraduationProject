@@ -149,12 +149,12 @@ public class ApplicantService {
     }
 
     @GraphQLQuery(name = "resultDetails", description = "预测结果分析表单-详情")
-    public Map<String,Object> resultDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
-        List<Integer> list=this.BFPredict(applyId);
+    public Map<String,Object> resultDetails(@GraphQLArgument(name = "id", description = "Applicant的id:applyId") String id) throws Exception {
+        List<Integer> list=this.BFPredict(id);
         Map<String,Object> map = new HashMap<>();
-        map.put("predictResult",this.invokePython(applyId));
+        map.put("predictResult",this.invokePython(id));
         if(list.get(0)!=0){
-            map.put("overdueDetails",this.overdueDetails(applyId));
+            map.put("overdueDetails",this.overdueDetails(id));
 
         }
         if(list.get(1)!=0){
@@ -164,16 +164,16 @@ public class ApplicantService {
             map.put("clientPhoneBF","此客户手机号处于黑名单");
         }
         if(list.get(3)!=0){
-            map.put("OneDimenRelationshipBFDetails",this.OneDimenRelationshipBFDetails(applyId));
+            map.put("OneDimenRelationshipBFDetails",this.OneDimenRelationshipBFDetails(id));
         }
         if(list.get(4)!=0){
-            map.put("OneDimenRelationshipPhoneBFDetails",this.OneDimenRelationshipPhoneBFDetails(applyId));
+            map.put("OneDimenRelationshipPhoneBFDetails",this.OneDimenRelationshipPhoneBFDetails(id));
         }
         if(list.get(5)!=0){
-            map.put("TwoDimenRelationshipBFDetails",this.TwoDimenRelationshipBFDetails(applyId));
+            map.put("TwoDimenRelationshipBFDetails",this.TwoDimenRelationshipBFDetails(id));
         }
         if(list.get(6)!=0){
-            map.put("TwoDimenRelationshipPhoneBFDetals",this.TwoDimenRelationshipPhoneBFDetals(applyId));
+            map.put("TwoDimenRelationshipPhoneBFDetals",this.TwoDimenRelationshipPhoneBFDetals(id));
         }
         return map;
     }
