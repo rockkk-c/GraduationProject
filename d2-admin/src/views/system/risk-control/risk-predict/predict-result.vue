@@ -1,10 +1,14 @@
 <template xmlns:font-size="http://www.w3.org/1999/xhtml">
   <d2-container>
     <h1>信息检测结果</h1>
-    <h3  >预测结果（0代表高风险，1代表低风险）：{{predictResult}}</h3>
-    <h3 v-if="clientBF===1">此客户处于黑名单状态</h3>
-    <h3 v-if="clientPhoneBF===1">此客户的手机号处于黑名单状态</h3>
-    <h3 align="center" style="color:red"  font-size:50px v-if="overdueDetails!=null">此客户之前的进件逾期详情</h3>
+<!--    <h1 style="color:red; width:70%;float:right;font-size:80px;" >{{predictResult}}</h1>-->
+<!--    <h2 style="color:red; width:30%;float:left">预测结果（0代表高风险，1代表低风险）：</h2>-->
+    <h2 style="color:red; ">预测结果（0代表高风险，1代表低风险）：</h2>
+    <div style="float:right;height:150px;width:70%;background-color: #67C23A"><h1 style="color:red;font-size: 50px " >{{predictResult}}</h1></div>
+    <h3 style="color:dodgerblue">结果分析如下：</h3>
+    <h3 >{{clientBF}}</h3>
+    <h3 >{{clientPhoneBF}}</h3>
+    <h3 align="center" style="color:dodgerblue"  font-size:50px v-if="overdueDetails!=null">此客户之前的进件逾期详情</h3>
     <el-table :data="overdueDetails" v-if="overdueDetails!=null" border style="width: 100%">
       <el-table-column prop="id" label="进件号">
       </el-table-column>
@@ -27,7 +31,7 @@
       <el-table-column prop="status" label="进件状态">
       </el-table-column>
     </el-table>
-    <h3 align="center" style="color:red"  font-size:50px v-if="OneDimenRelationshipBFDetails!=null">一维关系中触碰黑名单客户</h3>
+    <h3 align="center" style="color:dodgerblue"  font-size:50px v-if="OneDimenRelationshipBFDetails!=null">一维关系中触碰黑名单客户</h3>
     <el-table :data="OneDimenRelationshipBFDetails" border v-if="OneDimenRelationshipBFDetails!=null"  style="width: 100%">
       <el-table-column prop="id"   label="ID">
       </el-table-column>
@@ -47,7 +51,7 @@
       </el-table-column>
     </el-table>
 
-    <h3 align="center" style="color:red"  font-size:50px v-if="TwoDimenRelationshipBFDetails!=null">二维关系中触碰黑名单客户</h3>
+    <h3 align="center" style="color:dodgerblue"  font-size:50px v-if="TwoDimenRelationshipBFDetails!=null">二维关系中触碰黑名单客户</h3>
     <el-table :data="TwoDimenRelationshipBFDetails" border v-if="TwoDimenRelationshipBFDetails!=null" style="width: 100%">
       <el-table-column prop="id"   label="ID">
       </el-table-column>
@@ -66,7 +70,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <h3 align="center" style="color:red"  font-size:50px v-if="OneDimenRelationshipPhoneBFDetails!=null">一维关系中触碰黑名单的电话</h3>
+    <h3 align="center" style="color:dodgerblue"  font-size:50px v-if="OneDimenRelationshipPhoneBFDetails!=null">一维关系中触碰黑名单的电话</h3>
     <el-table :data="OneDimenRelationshipPhoneBFDetails" border v-if="OneDimenRelationshipPhoneBFDetails!=null" style="width: 100%">
       <el-table-column prop="id"   label="ID">
       </el-table-column>
@@ -85,7 +89,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <h3 align="center" style="color:red"  font-size:50px v-if="TwoDimenRelationshipPhoneBFDetals!=null">二维关系中触碰黑名单电话</h3>
+    <h3 align="center" style="color:dodgerblue"  font-size:50px v-if="TwoDimenRelationshipPhoneBFDetals!=null">二维关系中触碰黑名单电话</h3>
     <el-table :data="TwoDimenRelationshipPhoneBFDetals" border v-if="TwoDimenRelationshipPhoneBFDetals!=null" style="width: 100%">
       <el-table-column prop="id"   label="ID">
       </el-table-column>
@@ -125,7 +129,7 @@ export default {
              resultDetails(id:$id)
      }`,
       variables: {
-        id: '100007'
+        id: this.$route.query.id
       }
     }).then(res => {
       this.predictResult = res.data.resultDetails.predictResult.predictResult

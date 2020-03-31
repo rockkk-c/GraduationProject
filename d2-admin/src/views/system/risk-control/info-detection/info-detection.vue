@@ -70,8 +70,8 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">信息检测</el-button>
-              <el-button type="danger"  size="small" @click="handleUpdateClick(scope.row)">通过检测</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small">欺诈检测</el-button>
+              <el-button type="danger"  size="small" @click="handleUpdateClick(scope.row)">低欺诈风险</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -138,7 +138,7 @@ export default {
       })
     },
     handleUpdateClick (row) {
-      this.$confirm('确认通过信息检测（确认后不可修改）？')
+      this.$confirm('确认通过欺诈检测（确认后不可修改）？')
         .then(_ => {
           this.$apollo.mutate({
             // Query

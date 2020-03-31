@@ -195,7 +195,7 @@ export default {
       this.$router.push({
         path: 'number-detail',
         query: {
-          name: '机主'
+          number: row.number
         }
       })
     },

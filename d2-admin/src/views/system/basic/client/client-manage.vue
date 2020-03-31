@@ -222,7 +222,6 @@ export default {
 
   },
   created () {
-    let This = this
     this.$apollo.query({
       // Query
       query: gql`query{
