@@ -152,15 +152,16 @@ public class ApplicantService {
     public Map<String,Object> resultDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
         List<Integer> list=this.BFPredict(applyId);
         Map<String,Object> map = new HashMap<>();
+        map.put("predictResult",this.invokePython(applyId));
         if(list.get(0)!=0){
             map.put("overdueDetails",this.overdueDetails(applyId));
 
         }
         if(list.get(1)!=0){
-            map.put("feature2","此客户处于黑名单");
+            map.put("clientBF","此客户处于黑名单");
         }
         if(list.get(2)!=0){
-            map.put("feature2","此客户手机号处于黑名单");
+            map.put("clientPhoneBF","此客户手机号处于黑名单");
         }
         if(list.get(3)!=0){
             map.put("OneDimenRelationshipBFDetails",this.OneDimenRelationshipBFDetails(applyId));
