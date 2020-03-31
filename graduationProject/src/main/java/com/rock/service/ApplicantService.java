@@ -184,6 +184,10 @@ public class ApplicantService {
     @GraphQLQuery(name = "invokePython", description = "调用python的http接口，返回预测结果")
     public PyResult invokePython(@GraphQLArgument(name = "id", description = "Applicant的id") String id) throws Exception {
         List<Integer> list=BFPredict(id);
+        if(list.get(1)==1){
+            PyResult res=new PyResult("0");
+            return res;
+        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://127.0.0.1:8887/")
                 .addConverterFactory(GsonConverterFactory.create())
