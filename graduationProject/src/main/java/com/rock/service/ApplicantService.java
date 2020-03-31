@@ -159,9 +159,13 @@ public class ApplicantService {
         }
         if(list.get(1)!=0){
             map.put("clientBF","此客户处于黑名单");
+        }else{
+            map.put("clientBF","此客户处于白名单");
         }
         if(list.get(2)!=0){
             map.put("clientPhoneBF","此客户手机号处于黑名单");
+        }else{
+            map.put("clientPhoneBF","此客户手机号处于白名单");
         }
         if(list.get(3)!=0){
             map.put("OneDimenRelationshipBFDetails",this.OneDimenRelationshipBFDetails(id));
