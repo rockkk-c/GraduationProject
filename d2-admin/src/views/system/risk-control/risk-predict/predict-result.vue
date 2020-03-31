@@ -1,10 +1,9 @@
 <template xmlns:font-size="http://www.w3.org/1999/xhtml">
   <d2-container>
     <h1>信息检测结果</h1>
-    <h3 >预测结果（1代表风险低，0代表风险高）：{{predictResult}}</h3>
+    <h3  >预测结果（0代表高风险，1代表低风险）：{{predictResult}}</h3>
     <h3 v-if="clientBF===1">此客户处于黑名单状态</h3>
     <h3 v-if="clientPhoneBF===1">此客户的手机号处于黑名单状态</h3>
-
     <h3 align="center" style="color:red"  font-size:50px v-if="overdueDetails!=null">此客户之前的进件逾期详情</h3>
     <el-table :data="overdueDetails" v-if="overdueDetails!=null" border style="width: 100%">
       <el-table-column prop="id" label="进件号">
@@ -129,7 +128,7 @@ export default {
         id: '100007'
       }
     }).then(res => {
-      this.predictResult = res.data.resultDetails.predictResult
+      this.predictResult = res.data.resultDetails.predictResult.predictResult
       this.clientBF = res.data.resultDetails.clientBF
       this.clientPhoneBF = res.data.resultDetails.clientPhoneBF
       this.overdueDetails = res.data.resultDetails.overdueDetails
@@ -137,6 +136,8 @@ export default {
       this.OneDimenRelationshipPhoneBFDetails = res.data.resultDetails.OneDimenRelationshipPhoneBFDetails
       this.TwoDimenRelationshipBFDetails = res.data.resultDetails.TwoDimenRelationshipBFDetails
       this.TwoDimenRelationshipPhoneBFDetals = res.data.resultDetails.TwoDimenRelationshipPhoneBFDetals
+      console.log('clientBF:' + this.clientBF)
+      console.log('clientPhoneBF:' + this.clientPhoneBF)
     }).catch(error => {
       console.log(error)
     })
