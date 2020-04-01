@@ -21,11 +21,13 @@ import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import VueApollo from 'vue-apollo'
 
+import D2Crud from '@d2-projects/d2-crud'
 Vue.prototype.$store = store
 
 // 核心插件
 Vue.use(d2Admin)
 Vue.use(VCharts)
+Vue.use(D2Crud)
 
 const httpLink = new HttpLink({
   // You should use an absolute URL here

@@ -1,5 +1,8 @@
 <template>
   <d2-container>
+    <div>
+
+    </div>
     <el-row>
       <el-col style="margin-bottom: 20px;">
         <el-row style="display: flex;align-items: center;">
@@ -12,7 +15,7 @@
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
                 <div style="font-size: 18px;width: 20%;text-align: right;margin-right: 20px;">状态:</div>
-                <el-select v-model="searchInput.flag" placeholder="请选择员工角色">
+                <el-select v-model="searchInput.flag" placeholder="请选择号码状态">
                   <el-option label="白名单" value="WHITE"></el-option>
                   <el-option label="黑名单" value="BLACK"></el-option>
                 </el-select>
@@ -31,11 +34,12 @@
       </el-col>
       <hr />
       <el-col style="margin-top: 20px;">
+
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column type="index" label="序号"></el-table-column>
           <el-table-column prop="number" label="号码">
           </el-table-column>
-          <el-table-column label="状态">
+          <el-table-column label="状态" prop="flag">
             <template slot-scope="scope">
               {{scope.row.flag == 'WHITE'?"白名单":"黑名单"}}
             </template>
@@ -48,6 +52,12 @@
             </template>
           </el-table-column>
         </el-table>
+        <d2-crud
+
+          :data="tableData"
+          :loading="loading"
+          :pagination="pagination"
+          @pagination-current-change="paginationCurrentChange"/>
       </el-col>
 
     </el-row>
@@ -59,7 +69,7 @@
         </el-form-item>
         <el-form-item :label-width="formLabelWidth">
           <el-switch style="display: block" v-model="form.state" active-color="#13ce66" inactive-color="#ff4949"
-            active-text="白名单" inactive-text="黑名单">
+                     active-text="白名单" inactive-text="黑名单">
           </el-switch>
         </el-form-item>
       </el-form>
@@ -76,7 +86,7 @@
         </el-form-item>
         <el-form-item :label-width="formLabelWidth">
           <el-switch style="display: block" v-model="updateState" active-color="#13ce66" inactive-color="#ff4949"
-            active-text="白名单" inactive-text="黑名单">
+                     active-text="白名单" inactive-text="黑名单">
           </el-switch>
         </el-form-item>
       </el-form>
@@ -159,7 +169,6 @@ export default {
         this.form.number = ''
         return
       }
-
       this.$apollo.mutate({
         // Query
         mutation: gql`mutation($number:String!,$flag:String!){
@@ -249,7 +258,6 @@ export default {
     },
     refreshTable () {
       let This = this
-
       this.$apollo.query({
         // Query
         query: gql`query{
@@ -266,33 +274,61 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-    }
-
-  },
-  created () {
-    let This = this
-    this.$apollo.query({
-      // Query
-      query: gql`query{
+    },
+    // 分页--start
+    paginationCurrentChange (currentPage) {
+      console.log('-----:' + currentPage)
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      this.$apollo.query({
+        // Query
+        query: gql`query{
                selectAllPhone
                       {
                           number,
                           flag
                       }
        }`,
-      variables: {
-        // role: this.role,
-      }
-    }).then(res => {
-      console.log(res)
-      This.tableData = res.data.selectAllPhone
-    }).catch(error => {
-      console.log(error)
-    })
+        variables: {
+        }
+      }).then(res => {
+        this.tableData = res.data.selectAllPhone
+        this.pagination.total = this.tableData.length
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
+      })
+    }
+    // 分页 --end
+  },
+  created () {
+    this.fetchData()
+    // let This = this
+    // this.$apollo.query({
+    //   // Query
+    //   query: gql`query{
+    //            selectAllPhone
+    //                   {
+    //                       number,
+    //                       flag
+    //                   }
+    //    }`,
+    //   variables: {
+    //     // role: this.role,
+    //   }
+    // }).then(res => {
+    //   console.log(res)
+    //   This.tableData = res.data.selectAllPhone
+    // }).catch(error => {
+    //   console.log(error)
+    // })
   },
   data () {
     return {
-
       // 编辑电话
       updateNumber: '',
       // 编辑状态
@@ -312,7 +348,26 @@ export default {
         number: '',
         flag: ''
       },
-      tableData: []
+      tableData: [],
+      // 分页 --start
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      },
+      columns: [
+        {
+          title: '号码',
+          key: 'number',
+          width: 320
+        }, {
+          title: '状态',
+          key: 'flag',
+          width: 320
+        }
+      ]
+      // 分页--end
     }
   }
 }

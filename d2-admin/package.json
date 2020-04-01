@@ -16,6 +16,7 @@
     "analyz": "npm_config_report=true npm run build"
   },
   "dependencies": {
+    "@d2-projects/d2-crud": "^2.1.2",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link": "^1.2.13",
