@@ -150,7 +150,7 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($id:String!,$name:String!,$sex:String!,$number:String!,$flag:String!){
+        query: gql`query($id:String,$name:String,$sex:String,$number:String,$flag:String){
                 selectPerson(person:{
                  id:$id,
                  name:$name,

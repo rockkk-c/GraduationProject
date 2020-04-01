@@ -34,7 +34,7 @@ const frameIn = [
         path: 'client-detail',
         name: 'client-detail',
         meta: {
-          title: '客户详情',
+          title: '查看进件的申请人',
           auth: true
         },
         component: _import('system/basic/client/client-detail')
@@ -52,7 +52,7 @@ const frameIn = [
         path: 'apply-detail',
         name: 'apply-detail',
         meta: {
-          title: '申请人详情',
+          title: '查看客户的进件列表',
           auth: true
         },
         component: _import('system/basic/apply/apply-detail')
