@@ -41,6 +41,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
             </div>
           </el-col>
         </el-row>
@@ -79,7 +80,6 @@
 
     </el-row>
 
-
   </d2-container>
 
 </template>
@@ -92,7 +92,7 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($id:String!,$amount:String!,$term:String!,$job:String!,$city:String!,$applicant:String!){
+        query: gql`query($id:String,$amount:String,$term:String,$job:String,$city:String,$applicant:String){
                   selectApplicant(applicant:{
                   id:$id,
                   amount:$amount,
@@ -175,7 +175,44 @@ export default {
           break
         }
       }
+    },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.id = ''
+      this.searchInput.amount = ''
+      this.searchInput.term = ''
+      this.searchInput.job = ''
+      this.searchInput.city = ''
+      this.searchInput.status = ''
+    },
+    refreshTable () {
+      let This = this
+      this.$apollo.query({
+        // Query
+        query: gql`query{
+                 allNullStatus
+                      {
+                           id,
+                           amount,
+                           term,
+                           job,
+                           city,
+                           parent_phone,
+                           colleague_phone,
+                           company_phone,
+                           applicant,
+                           status
+                      }
+       }`,
+        variables: {}
+      }).then(res => {
+        This.tableData = res.data.allNullStatus
+      }).catch(error => {
+        console.log(error)
+      })
     }
+
   },
   created () {
     let This = this

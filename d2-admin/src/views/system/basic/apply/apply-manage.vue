@@ -63,6 +63,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
               <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增进件</el-button>
             </div>
           </el-col>
@@ -383,8 +384,8 @@ export default {
       }).then(res => {
         console.log(res)
         if (res.data.updateApplicant.code === 0) {
-          This.updateTableData(this.updateForm.id, this.updateForm.amount, this.updateForm.term, this.updateForm.job, this.updateForm.city,this.updateForm.parent_phone,
-            this.updateForm.colleague_phone,this.updateForm.company_phone,this.updateForm.applicant,this.updateForm.status)
+          This.updateTableData(this.updateForm.id, this.updateForm.amount, this.updateForm.term, this.updateForm.job, this.updateForm.city, this.updateForm.parent_phone,
+            this.updateForm.colleague_phone, this.updateForm.company_phone, this.updateForm.applicant, this.updateForm.status)
           This.$message({
             message: '进件修改成功',
             type: 'success'
@@ -450,6 +451,46 @@ export default {
           This.tableData[i].status = status
         }
       }
+    },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.id = ''
+      this.searchInput.amount = ''
+      this.searchInput.job = ''
+      this.searchInput.city = ''
+      this.searchInput.parent_phone = ''
+      this.searchInput.colleague_phone = ''
+      this.searchInput.company_phone = ''
+      this.searchInput.status = ''
+    },
+    refreshTable () {
+      let This = this
+
+      this.$apollo.query({
+        // Query
+        query: gql`query{
+                 selectAllApplicant
+                      {
+                           id,
+                           amount,
+                           term,
+                           job,
+                           city,
+                           parent_phone,
+                           colleague_phone,
+                           company_phone,
+                           applicant,
+                           status
+                      }
+       }`,
+        variables: {
+        }
+      }).then(res => {
+        This.tableData = res.data.selectAllApplicant
+      }).catch(error => {
+        console.log(error)
+      })
     },
     addTableData (id, amount, term, job, city, parentPhone, colleaguePhone, companyPhone, applicant) {
       let This = this

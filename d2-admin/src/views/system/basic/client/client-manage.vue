@@ -7,12 +7,12 @@
             <div style="display: flex;flex-direction: row;">
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
                 <div style="font-size: 18px;width: 20%;text-align: right;margin-right: 20px;">ID:</div>
-                <el-input placeholder="请输入ID" v-model="searchInput.id" clearable style="width: 80%;">
+                <el-input placeholder="请输入ID" v-model="searchInput.id" id="idInput" clearable style="width: 80%;">
                 </el-input>
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
                 <div style="font-size: 18px;width: 20%;text-align: right;margin-right: 20px;">姓名:</div>
-                <el-input placeholder="请输入姓名" v-model="searchInput.name" clearable style="width: 80%;">
+                <el-input placeholder="请输入姓名" v-model="searchInput.name" id="nameInput" clearable style="width: 80%;">
                 </el-input>
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
@@ -29,7 +29,7 @@
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
                 <div style="font-size: 18px;width: 40%;text-align: right;margin-right: 20px;">状态:</div>
-                <el-select v-model="searchInput.blackList" placeholder="请选择员工角色">
+                <el-select v-model="searchInput.blackList" placeholder="请选择客户状态">
                   <el-option label="白名单" value="WHITE"></el-option>
                   <el-option label="黑名单" value="BLACK"></el-option>
                 </el-select>
@@ -39,6 +39,7 @@
           <el-col :span="6">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
               <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增客户</el-button>
             </div>
           </el-col>
@@ -180,6 +181,15 @@ export default {
         console.log(error)
       })
     },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.id = ''
+      this.searchInput.name = ''
+      this.searchInput.sex = ''
+      this.searchInput.phone = ''
+      this.searchInput.blackList = ''
+    },
     editClient (row) {
       console.log(row)
       this.updateForm.clientId = row.id
@@ -291,6 +301,29 @@ export default {
         query: {
           id: row.id
         }
+      })
+    },
+    refreshTable () {
+      let This = this
+
+      this.$apollo.query({
+        // Query
+        query: gql`query{
+                  selectAllPerson
+                    {
+                        id,
+                        name,
+                        sex,
+                        number,
+                        flag
+                    }
+     }`,
+        variables: {
+        }
+      }).then(res => {
+        This.tableData = res.data.selectAllPerson
+      }).catch(error => {
+        console.log(error)
       })
     },
     handleDeleteClick (row) {

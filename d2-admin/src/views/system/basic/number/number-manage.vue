@@ -23,6 +23,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
               <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增号码</el-button>
             </div>
           </el-col>
@@ -97,7 +98,7 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($flag:String!,$number:String!){
+        query: gql`query($flag:String,$number:String){
                   loadListOfPhone(flag:$flag,number:$number)
                          {
                              number,
@@ -239,6 +240,32 @@ export default {
         .catch(_ => {
           console.log('取消')
         })
+    },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.number = ''
+      this.searchInput.flag = ''
+    },
+    refreshTable () {
+      let This = this
+
+      this.$apollo.query({
+        // Query
+        query: gql`query{
+                 selectAllPhone
+                      {
+                          number,
+                          flag
+                      }
+       }`,
+        variables: {
+        }
+      }).then(res => {
+        This.tableData = res.data.selectAllPhone
+      }).catch(error => {
+        console.log(error)
+      })
     }
 
   },

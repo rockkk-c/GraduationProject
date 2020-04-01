@@ -21,7 +21,6 @@
                   <el-option label="管理员" value="admin"></el-option>
                   <el-option label="普通员工" value="staff"></el-option>
                 </el-select>
-                </el-input>
               </div>
 
             </div>
@@ -29,7 +28,8 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
-              <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;" v-if="role=='admin'">新增员工</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
+              <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增员工</el-button>
             </div>
           </el-col>
         </el-row>
@@ -137,6 +137,13 @@ export default {
     },
     createBtnClick () {
       this.dialogFormVisible = true
+    },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.empId = ''
+      this.searchInput.empName = ''
+      this.searchInput.empRole = ''
     },
     refreshTable () {
       let This = this
