@@ -57,7 +57,7 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
      * 查看机主
      */
     @Query("MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n")
-    Person selectPhoneOwner(@Param("number") String number);
+    List<Person> selectPhoneOwner(@Param("number") String number);
 
     /**
      *  首页显示-Phone数量

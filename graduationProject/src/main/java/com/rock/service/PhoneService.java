@@ -57,13 +57,13 @@ public class PhoneService {
         return phoneRepository.loadListOfPhone(flag,number);
     }
 
-    @GraphQLQuery(name = "selectAllPhone", description = "查看机主")
+    @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
     public List<Phone> selectAllPhone() {
         return phoneRepository.selectAllPhone();
     }
 
-    @GraphQLQuery(name = "selectPhoneOwner", description = "查询所有Phone")
-    public Person selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number) {
+    @GraphQLQuery(name = "selectPhoneOwner", description = "查看机主")
+    public List<Person> selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number) {
         return phoneRepository.selectPhoneOwner(number);
     }
 

@@ -339,7 +339,7 @@ public class ApplicantService {
         return Result.ok("修改成功！");
     }
     @GraphQLQuery(name="selectPersonByApplicant",description = "查看客户")
-    public Person selectPersonByApplicant(@GraphQLArgument(name="id",description = "Applicant.id")String id){
+    public List<Person> selectPersonByApplicant(@GraphQLArgument(name="id",description = "Applicant.id")String id){
         return applicantRepository.selectPersonByApplicant(id);
     }
     @GraphQLQuery(name="countOfApplicant",description = "首页显示-Applicant数量")

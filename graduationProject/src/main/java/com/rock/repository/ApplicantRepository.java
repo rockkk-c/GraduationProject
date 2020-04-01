@@ -115,7 +115,7 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
      *  查看Applicant的客户信息
      **/
     @Query("MATCH (n:Person)-[:APPLY]-(a:Applicant) where a.id={id} return n")
-    Person selectPersonByApplicant(@Param("id") String id);
+    List<Person> selectPersonByApplicant(@Param("id") String id);
 
     /**
      *  首页显示-Applicant数量
