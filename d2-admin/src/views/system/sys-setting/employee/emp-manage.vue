@@ -214,7 +214,7 @@ export default {
     createBtn () {
       let This = this
       console.log(this.form)
-      if (this.form.empName == '') {
+      if (this.form.empName === '') {
         this.$message({
           message: '姓名不能为空',
           type: 'warning'
