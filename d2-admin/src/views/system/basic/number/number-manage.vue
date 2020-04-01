@@ -1,5 +1,8 @@
 <template>
   <d2-container>
+    <div>
+
+    </div>
     <el-row>
       <el-col style="margin-bottom: 20px;">
         <el-row style="display: flex;align-items: center;">
@@ -12,7 +15,7 @@
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
                 <div style="font-size: 18px;width: 20%;text-align: right;margin-right: 20px;">状态:</div>
-                <el-select v-model="searchInput.flag" placeholder="请选择员工角色">
+                <el-select v-model="searchInput.flag" placeholder="请选择号码状态">
                   <el-option label="白名单" value="WHITE"></el-option>
                   <el-option label="黑名单" value="BLACK"></el-option>
                 </el-select>
@@ -23,6 +26,7 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
               <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增号码</el-button>
             </div>
           </el-col>
@@ -30,11 +34,12 @@
       </el-col>
       <hr />
       <el-col style="margin-top: 20px;">
+
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column type="index" label="序号"></el-table-column>
           <el-table-column prop="number" label="号码">
           </el-table-column>
-          <el-table-column label="状态">
+          <el-table-column label="状态" prop="flag">
             <template slot-scope="scope">
               {{scope.row.flag == 'WHITE'?"白名单":"黑名单"}}
             </template>
@@ -47,6 +52,12 @@
             </template>
           </el-table-column>
         </el-table>
+        <d2-crud
+
+          :data="tableData"
+          :loading="loading"
+          :pagination="pagination"
+          @pagination-current-change="paginationCurrentChange"/>
       </el-col>
 
     </el-row>
@@ -97,7 +108,7 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($flag:String!,$number:String!){
+        query: gql`query($flag:String,$number:String){
                   loadListOfPhone(flag:$flag,number:$number)
                          {
                              number,
@@ -131,13 +142,13 @@ export default {
           flag: this.updateState ? 'WHITE' : 'BLACK'
         }
       }).then(res => {
-        if (res.data.updatePhoneByNumber.code == 0) {
+        if (res.data.updatePhoneByNumber.code === 0) {
           this.$message({
             message: '状态修改成功',
             type: 'success'
           })
           for (let i = 0; i < This.tableData.length; i++) {
-            if (This.tableData[i].number == This.updateNumber) {
+            if (This.tableData[i].number === This.updateNumber) {
               // This.tableData[i] = This.updateState;
               break
             }
@@ -176,7 +187,7 @@ export default {
           flag: this.form.state ? 'WHITE' : 'BLACK'
         }
       }).then(res => {
-        if (res.data.addPhone.code == 0) {
+        if (res.data.addPhone.code === 0) {
           this.$message({
             message: '号码添加成功',
             type: 'success'
@@ -195,14 +206,14 @@ export default {
       this.$router.push({
         path: 'number-detail',
         query: {
-          name: '机主'
+          number: row.number
         }
       })
     },
     editState (row) {
       console.log(row)
       this.updateNumber = row.number
-      this.updateState = row.flag == 'WHITE'
+      this.updateState = row.flag === 'WHITE'
       this.dialogUpdateFormVisible = true
     },
     handleDeleteClick (row) {
@@ -227,7 +238,7 @@ export default {
               type: 'success'
             })
             for (let i = 0; i < This.tableData.length; i++) {
-              if (This.tableData[i].number == row.number) {
+              if (This.tableData[i].number === row.number) {
                 This.tableData.splice(i, 1)
                 break
               }
@@ -239,30 +250,88 @@ export default {
         .catch(_ => {
           console.log('取消')
         })
-    }
+    },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.number = ''
+      this.searchInput.flag = ''
+    },
+    refreshTable () {
+      let This = this
 
-  },
-  created () {
-    let This = this
-    this.$apollo.query({
-      // Query
-      query: gql`query{
+      this.$apollo.query({
+        // Query
+        query: gql`query{
+                 selectAllPhone
+                      {
+                          number,
+                          flag
+                      }
+       }`,
+        variables: {
+        }
+      }).then(res => {
+        This.tableData = res.data.selectAllPhone
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 分页--start
+    paginationCurrentChange (currentPage) {
+      console.log("-----:"+currentPage);
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      this.$apollo.query({
+        // Query
+        query: gql`query{
                selectAllPhone
                       {
                           number,
                           flag
                       }
        }`,
-      variables: {
-        // role: this.role,
-      }
-    }).then(res => {
-      console.log(res)
-      This.tableData = res.data.selectAllPhone
-    }).catch(error => {
-      console.log(error)
-    })
+        variables: {
+
+        }
+      }).then(res => {
+        this.tableData = res.data.selectAllPhone;
+        this.pagination.total = this.tableData.length;
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
+      })
+    }
+    // 分页 --end
+
   },
+  created () {
+    this.fetchData()
+    // let This = this
+    // this.$apollo.query({
+    //   // Query
+    //   query: gql`query{
+    //            selectAllPhone
+    //                   {
+    //                       number,
+    //                       flag
+    //                   }
+    //    }`,
+    //   variables: {
+    //     // role: this.role,
+    //   }
+    // }).then(res => {
+    //   console.log(res)
+    //   This.tableData = res.data.selectAllPhone
+    // }).catch(error => {
+    //   console.log(error)
+    // })
+  },
+
   data () {
     return {
 
@@ -285,7 +354,27 @@ export default {
         number: '',
         flag: ''
       },
-      tableData: []
+      tableData: [],
+      // 分页 --start
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      },
+      columns: [
+        {
+          title: '号码',
+          key: 'number',
+          width: 320
+        },{
+          title: '状态',
+          key: 'flag',
+          width: 320
+        }
+      ]
+      // 分页--end
+
     }
   }
 }
