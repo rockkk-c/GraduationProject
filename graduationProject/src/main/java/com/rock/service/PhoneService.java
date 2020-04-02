@@ -58,8 +58,8 @@ public class PhoneService {
     }
 
     @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
-    public List<Phone> selectAllPhone() {
-        return phoneRepository.selectAllPhone();
+    public List<Phone> selectAllPhone(@GraphQLArgument(name = "currentPage", description = "pageNumber")int currentPage) {
+        return phoneRepository.selectAllPhone(currentPage);
     }
 
     @GraphQLQuery(name = "selectPhoneOwner", description = "查看机主")
