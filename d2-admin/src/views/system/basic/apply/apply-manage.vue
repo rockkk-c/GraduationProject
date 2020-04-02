@@ -102,6 +102,10 @@
         </el-table>
       </el-col>
 
+      <d2-crud
+        :data="tableData"
+        :pagination="pagination"
+        @pagination-current-change="paginationCurrentChange"/>
     </el-row>
 
     <el-dialog title="添加新的进件"  :visible.sync="dialogFormVisible" width="30%">
@@ -208,7 +212,7 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($id:String,$amount:String,$term:String,$job:String,$city:String,$parent_phone:String,$colleague_phone:String,$company_phone:String,$status:String){
+        query: gql`query($id:String,$amount:String,$term:String,$job:String,$city:String,$parent_phone:String,$colleague_phone:String,$company_phone:String,$status:String,$currentPage:Int!){
                   selectApplicant(applicant:{
                     id:$id,
                     amount:$amount,
@@ -218,7 +222,8 @@ export default {
                     parent_phone:$parent_phone,
                     colleague_phone:$colleague_phone,
                     company_phone:$company_phone,
-                    status:$status
+                    status:$status,
+                    currentPage:$currentPage
             }){
                     id,
                     amount,
@@ -240,11 +245,12 @@ export default {
           parent_phone: this.searchInput.parent_phone,
           colleague_phone: this.searchInput.colleague_phone,
           company_phone: this.searchInput.company_phone,
-          status: this.searchInput.status
+          status: this.searchInput.status,
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
         console.log(res)
-        This.tableData = res.data.selectApplicant
+        This.tableData = res.data.selectApplicantcontent
       }).catch(error => {
         console.log(error)
       })
@@ -469,9 +475,10 @@ export default {
 
       this.$apollo.query({
         // Query
-        query: gql`query{
-                 selectAllApplicant
+        query: gql`query($currentPage:Int!){
+               selectAllApplicant(currentPage:$currentPage)
                       {
+                          content{
                            id,
                            amount,
                            term,
@@ -482,12 +489,21 @@ export default {
                            company_phone,
                            applicant,
                            status
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                       }
+
        }`,
         variables: {
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
-        This.tableData = res.data.selectAllApplicant
+        This.tableData = res.data.selectAllApplicant.content
       }).catch(error => {
         console.log(error)
       })
@@ -504,17 +520,19 @@ export default {
       This.tableData[i].colleague_phone = colleaguePhone
       This.tableData[i].company_phone = companyPhone
       This.tableData[i].applicant = applicant
-    }
-
-  },
-
-  created () {
-    let This = this
-    this.$apollo.query({
-      // Query
-      query: gql`query{
-               selectAllApplicant
+    },
+    paginationCurrentChange (currentPage) {
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      this.$apollo.query({
+        // Query
+        query: gql`query($currentPage:Int!){
+               selectAllApplicant(currentPage:$currentPage)
                       {
+                          content{
                            id,
                            amount,
                            term,
@@ -525,17 +543,60 @@ export default {
                            company_phone,
                            applicant,
                            status
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                       }
+
        }`,
-      variables: {
-        // role: this.role,
-      }
-    }).then(res => {
-      console.log(res)
-      This.tableData = res.data.selectAllApplicant
-    }).catch(error => {
-      console.log(error)
-    })
+        variables: {
+          currentPage: this.pagination.currentPage
+        }
+      }).then(res => {
+        this.tableData = res.data.selectAllApplicant.content
+        this.pagination.total = res.data.selectAllApplicant.totalElements
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
+      })
+    }
+
+  },
+
+  created () {
+    this.fetchData()
+    // let This = this
+    // this.$apollo.query({
+    //   // Query
+    //   query: gql`query{
+    //            selectAllApplicant
+    //                   {
+    //                        id,
+    //                        amount,
+    //                        term,
+    //                        job,
+    //                        city,
+    //                        parent_phone,
+    //                        colleague_phone,
+    //                        company_phone,
+    //                        applicant,
+    //                        status
+    //                   }
+    //    }`,
+    //   variables: {
+    //     // role: this.role,
+    //   }
+    // }).then(res => {
+    //   console.log(res)
+    //   This.tableData = res.data.selectAllApplicant
+    // }).catch(error => {
+    //   console.log(error)
+    // })
   },
   data () {
     return {
@@ -583,7 +644,13 @@ export default {
         applicant: '',
         status: ''
       },
-      tableData: []
+      tableData: [],
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      }
     }
   }
 }

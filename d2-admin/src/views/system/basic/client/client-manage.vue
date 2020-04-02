@@ -74,6 +74,11 @@
         </el-table>
       </el-col>
 
+      <d2-crud
+        :data="tableData"
+        :pagination="pagination"
+        @pagination-current-change="paginationCurrentChange"/>
+
     </el-row>
 
     <el-dialog title="添加新的客户" label-position="right" :visible.sync="dialogFormVisible" width="30%">
@@ -151,13 +156,14 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($id:String,$name:String,$sex:String,$number:String,$flag:String){
+        query: gql`query($id:String,$name:String,$sex:String,$number:String,$flag:String,$currentPage){
                 selectPerson(person:{
                  id:$id,
                  name:$name,
                  sex:$sex,
                  number:$number,
                  flag:$flag,
+                 currentPage:$currentPage
                 })
                  {
                     id,
@@ -172,11 +178,12 @@ export default {
           name: this.searchInput.name,
           sex: this.searchInput.sex,
           number: this.searchInput.phone,
-          flag: this.searchInput.blackList
+          flag: this.searchInput.blackList,
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
         console.log(res)
-        This.tableData = res.data.selectPerson
+        This.tableData = res.data.selectPerson.content
       }).catch(error => {
         console.log(error)
       })
@@ -308,20 +315,30 @@ export default {
 
       this.$apollo.query({
         // Query
-        query: gql`query{
-                  selectAllPerson
-                    {
-                        id,
-                        name,
-                        sex,
-                        number,
-                        flag
-                    }
-     }`,
+        query: gql`query($currentPage:Int!){
+               selectAllPerson(currentPage:$currentPage)
+                      {
+                          content{
+                          id,
+                          name,
+                          sex,
+                          number,
+                          flag
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
+                      }
+
+       }`,
         variables: {
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
-        This.tableData = res.data.selectAllPerson
+        This.tableData = res.data.selectAllPerson.content
       }).catch(error => {
         console.log(error)
       })
@@ -365,30 +382,69 @@ export default {
           break
         }
       }
-    }
-
-  },
-  created () {
-    this.$apollo.query({
-      // Query
-      query: gql`query{
-             selectAllPerson
-                    {
-                        id,
+    },
+    paginationCurrentChange (currentPage) {
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      this.$apollo.query({
+        // Query
+        query: gql`query($currentPage:Int!){
+               selectAllPerson(currentPage:$currentPage)
+                      {
+                          content{
+                          id,
                           name,
                           sex,
                           number,
                           flag
-                    }
-     }`,
-      variables: {
-        // role: this.role,
-      }
-    }).then(res => {
-      this.tableData = res.data.selectAllPerson
-    }).catch(error => {
-      console.log(error)
-    })
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
+                      }
+
+       }`,
+        variables: {
+          currentPage: this.pagination.currentPage
+        }
+      }).then(res => {
+        this.tableData = res.data.selectAllPerson.content
+        this.pagination.total = res.data.selectAllPerson.totalElements
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
+      })
+    }
+  },
+  created () {
+    this.fetchData()
+    // this.$apollo.query({
+    //   // Query
+    //   query: gql`query{
+    //          selectAllPerson
+    //                 {
+    //                     id,
+    //                       name,
+    //                       sex,
+    //                       number,
+    //                       flag
+    //                 }
+    //  }`,
+    //   variables: {
+    //     // role: this.role,
+    //   }
+    // }).then(res => {
+    //   this.tableData = res.data.selectAllPerson
+    // }).catch(error => {
+    //   console.log(error)
+    // })
   },
   data () {
     return {
@@ -422,7 +478,13 @@ export default {
         phone: '',
         blackList: ''
       },
-      tableData: []
+      tableData: [],
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      }
     }
   }
 }

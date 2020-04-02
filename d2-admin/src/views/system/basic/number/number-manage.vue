@@ -109,7 +109,7 @@ export default {
       this.$apollo.query({
         // Query
         query: gql`query($flag:String,$number:String){
-                  loadListOfPhone(flag:$flag,number:$number)
+                  loadListOfPhone(flag:$flag,number:$number,currentPage:$currentPage)
                          {
                              number,
                              flag
@@ -117,11 +117,12 @@ export default {
          }`,
         variables: {
           number: this.searchInput.number,
-          flag: this.searchInput.flag
+          flag: this.searchInput.flag,
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
         console.log(res)
-        This.tableData = res.data.loadListOfPhone
+        This.tableData = res.data.loadListOfPhone.content
       }).catch(error => {
         console.log(error)
       })
@@ -257,11 +258,10 @@ export default {
       this.searchInput.flag = ''
     },
     refreshTable () {
-      let This = this
       this.$apollo.query({
         // Query
         query: gql`query($currentPage:Int!){
-               test(currentPage:$currentPage)
+               selectAllPhone(currentPage:$currentPage)
                       {
                           content{
                              number,
@@ -281,8 +281,8 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data.test.content
-        console.log('totalElements:' + res.data.test.totalElements)
-        this.pagination.total = res.data.test.totalElements
+        console.log('totalElements:' + res.data.selectAllPhone.totalElements)
+        this.pagination.total = res.data.selectAllPhone.totalElements
         this.loading = false
       }).catch(error => {
         console.log(error)
@@ -298,7 +298,7 @@ export default {
       this.$apollo.query({
         // Query
         query: gql`query($currentPage:Int!){
-               test(currentPage:$currentPage)
+               selectAllPhone(currentPage:$currentPage)
                       {
                           content{
                              number,
@@ -317,9 +317,8 @@ export default {
           currentPage: this.pagination.currentPage
         }
       }).then(res => {
-        this.tableData = res.data.test.content
-        console.log('totalElements:' + res.data.test.totalElements)
-        this.pagination.total = res.data.test.totalElements
+        this.tableData = res.data.selectAllPhone.content
+        this.pagination.total = res.data.selectAllPhone.totalElements
         this.loading = false
       }).catch(error => {
         console.log(error)
@@ -329,25 +328,6 @@ export default {
   },
   created () {
     this.fetchData()
-    // let This = this
-    // this.$apollo.query({
-    //   // Query
-    //   query: gql`query{
-    //            selectAllPhone
-    //                   {
-    //                       number,
-    //                       flag
-    //                   }
-    //    }`,
-    //   variables: {
-    //     // role: this.role,
-    //   }
-    // }).then(res => {
-    //   console.log(res)
-    //   This.tableData = res.data.selectAllPhone
-    // }).catch(error => {
-    //   console.log(error)
-    // })
   },
   data () {
     return {
