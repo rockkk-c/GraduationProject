@@ -88,7 +88,7 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
     /**
      *  查询所有Applicant
      **/
-    @Query(value = "MATCH (n:Applicant) RETURN n",
+    @Query(value = "MATCH (n:Applicant) RETURN n ORDER BY n.id",
     countQuery = "MATCH (n:Applicant) RETURN count(n)")
     Page<Applicant> selectAllApplicant(@Param("pageable") Pageable pageable);
     /**
@@ -133,13 +133,13 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
      **/
 //    @Query("MATCH (n:Applicant) where n.status ="" or n.status=~"(?i)NULL" RETURN n")
 //    List<Applicant> allNullStatus1();
-    @Query(value = "MATCH (n:Applicant) where n.status IS NULL RETURN n",
+    @Query(value = "MATCH (n:Applicant) where n.status IS NULL RETURN n ORDER BY n.id",
     countQuery = "MATCH (n:Applicant) where n.status IS NULL RETURN count(n)")
     Page<Applicant> allNullStatus( @Param("pageable") Pageable pageable);
     /**
      *  按条件查询Applicant
      **/
-    @Query(value = "MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN n",
+    @Query(value = "MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN n ORDER BY n.id",
     countQuery = "MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN count(n)")
     Page<Applicant> selectNullStatus(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
                                     @Param("job")String job,@Param("city")String city,@Param("applicant")String applicant,
