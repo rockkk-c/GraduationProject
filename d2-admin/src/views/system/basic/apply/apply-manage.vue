@@ -100,12 +100,13 @@
             </template>
           </el-table-column>
         </el-table>
+        <d2-crud
+          :data="tableData"
+          :pagination="pagination"
+          @pagination-current-change="paginationCurrentChange"/>
       </el-col>
 
-      <d2-crud
-        :data="tableData"
-        :pagination="pagination"
-        @pagination-current-change="paginationCurrentChange"/>
+
     </el-row>
 
     <el-dialog title="添加新的进件"  :visible.sync="dialogFormVisible" width="30%">

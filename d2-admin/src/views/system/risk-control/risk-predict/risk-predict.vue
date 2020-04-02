@@ -76,6 +76,11 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <d2-crud
+          :data="tableData"
+          :pagination="pagination"
+          @pagination-current-change="paginationCurrentChange"/>
       </el-col>
 
     </el-row>
@@ -91,7 +96,7 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($id:String,$amount:String,$term:String,$job:String,$city:String,$applicant:String){
+        query: gql`query($id:String,$amount:String,$term:String,$job:String,$city:String,$applicant:String,$currentPage:Int!){
                   selectApplicant(applicant:{
                   id:$id,
                   amount:$amount,
@@ -99,6 +104,7 @@ export default {
                   job:$job,
                   city:$city,
                   applicant:$applicant
+                  currentPage:$currentPage
               }){
               id,
               amount,
@@ -118,11 +124,12 @@ export default {
           term: this.searchInput.term,
           job: this.searchInput.job,
           city: this.searchInput.city,
-          status: this.searchInput.status
+          status: this.searchInput.status,
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
         console.log(res)
-        This.tableData = res.data.selectApplicant
+        This.tableData = res.data.selectApplicant.content
       }).catch(error => {
         console.log(error)
       })
@@ -189,9 +196,10 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query{
-                 selectThroughInfoTest
+        query: gql`query($currentPage:Int!){
+               selectThroughInfoTest(currentPage:$currentPage)
                       {
+                          content{
                            id,
                            amount,
                            term,
@@ -202,45 +210,74 @@ export default {
                            company_phone,
                            applicant,
                            status
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                       }
+
        }`,
-        variables: {}
+        variables: {
+          currentPage: this.pagination.currentPage
+        }
       }).then(res => {
-        This.tableData = res.data.selectThroughInfoTest
+        This.tableData = res.data.selectThroughInfoTest.content
       }).catch(error => {
         console.log(error)
+      })
+    },
+    paginationCurrentChange (currentPage) {
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      this.$apollo.query({
+        // Query
+        query: gql`query($currentPage:Int!){
+               selectThroughInfoTest(currentPage:$currentPage)
+                      {
+                          content{
+                           id,
+                           amount,
+                           term,
+                           job,
+                           city,
+                           parent_phone,
+                           colleague_phone,
+                           company_phone,
+                           applicant,
+                           status
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
+                      }
+
+       }`,
+        variables: {
+          currentPage: this.pagination.currentPage
+        }
+      }).then(res => {
+        this.tableData = res.data.selectThroughInfoTest.content
+        this.pagination.total = res.data.selectThroughInfoTest.totalElements
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
       })
     }
 
   },
 
   created () {
-    let This = this
-    this.$apollo.query({
-      query: gql`query{
-               selectThroughInfoTest
-                      {
-                           id,
-                           amount,
-                           term,
-                           job,
-                           city,
-                           parent_phone,
-                           colleague_phone,
-                           company_phone,
-                           applicant,
-                           status
-                      }
-       }`,
-      variables: {
-        // role: this.role,
-      }
-    }).then(res => {
-      console.log(res)
-      This.tableData = res.data.selectThroughInfoTest
-    }).catch(error => {
-      console.log(error)
-    })
+    this.fetchData()
   },
   data () {
     return {
@@ -258,7 +295,13 @@ export default {
         city: '',
         applicant: ''
       },
-      tableData: []
+      tableData: [],
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      }
 
     }
   }

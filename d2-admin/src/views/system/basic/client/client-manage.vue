@@ -72,12 +72,13 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-col>
 
-      <d2-crud
-        :data="tableData"
-        :pagination="pagination"
-        @pagination-current-change="paginationCurrentChange"/>
+
+        <d2-crud
+          :data="tableData"
+          :pagination="pagination"
+          @pagination-current-change="paginationCurrentChange"/>
+      </el-col>
 
     </el-row>
 
