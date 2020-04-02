@@ -55,9 +55,9 @@
 
         <d2-crud
           :data="tableData"
-          :loading="loading"
           :pagination="pagination"
           @pagination-current-change="paginationCurrentChange"/>
+
       </el-col>
 
     </el-row>
@@ -257,22 +257,37 @@ export default {
       this.searchInput.flag = ''
     },
     refreshTable () {
-      // let This = this
-      // this.$apollo.query({
-      //   // Query
-      //   query: gql`query(){
-      //            selectAllPhone()
-      //                 {
-      //                     number,
-      //                     flag
-      //                 }
-      //  }`,
-      //   variables: {}
-      // }).then(res => {
-      //   This.tableData = res.data.selectAllPhone
-      // }).catch(error => {
-      //   console.log(error)
-      // })
+      let This = this
+      this.$apollo.query({
+        // Query
+        query: gql`query($currentPage:Int!){
+               test(currentPage:$currentPage)
+                      {
+                          content{
+                             number,
+                             flag
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
+                      }
+
+       }`,
+        variables: {
+          currentPage: this.pagination.currentPage
+        }
+      }).then(res => {
+        this.tableData = res.data.test.content
+        console.log('totalElements:' + res.data.test.totalElements)
+        this.pagination.total = res.data.test.totalElements
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
+      })
     },
     paginationCurrentChange (currentPage) {
       this.pagination.currentPage = currentPage
@@ -282,19 +297,29 @@ export default {
       this.loading = true
       this.$apollo.query({
         // Query
-        query: gql`query($currentPage:Int){
-               selectAllPhone(currentPage:$currentPage)
+        query: gql`query($currentPage:Int!){
+               test(currentPage:$currentPage)
                       {
-                          number,
-                          flag
+                          content{
+                             number,
+                             flag
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                       }
+
        }`,
         variables: {
-          currentPage: this.currentPage
+          currentPage: this.pagination.currentPage
         }
       }).then(res => {
-        this.tableData = res.data.selectAllPhone
-        //this.pagination.total = this.tableData.length
+        this.tableData = res.data.test.content
+        console.log('totalElements:' + res.data.test.totalElements)
+        this.pagination.total = res.data.test.totalElements
         this.loading = false
       }).catch(error => {
         console.log(error)
