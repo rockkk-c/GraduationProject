@@ -35,23 +35,23 @@
       <hr />
       <el-col style="margin-top: 20px;">
 
-        <el-table :data="tableData" border style="width: 100%">
-          <el-table-column type="index" label="序号"></el-table-column>
-          <el-table-column prop="number" label="号码">
-          </el-table-column>
-          <el-table-column label="状态" prop="flag">
-            <template slot-scope="scope">
-              {{scope.row.flag == 'WHITE'?"白名单":"黑名单"}}
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作">
-            <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">查看机主</el-button>
-              <el-button type="text" size="small" @click="editState(scope.row)">编辑</el-button>
-              <el-button @click="handleDeleteClick(scope.row)" type="text" size="small">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+<!--        <el-table :data="tableData" border style="width: 100%">-->
+<!--          <el-table-column type="index" label="序号"></el-table-column>-->
+<!--          <el-table-column prop="number" label="号码">-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="状态" prop="flag">-->
+<!--            <template slot-scope="scope">-->
+<!--              {{scope.row.flag == 'WHITE'?"白名单":"黑名单"}}-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column fixed="right" label="操作">-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-button @click="handleClick(scope.row)" type="text" size="small">查看机主</el-button>-->
+<!--              <el-button type="text" size="small" @click="editState(scope.row)">编辑</el-button>-->
+<!--              <el-button @click="handleDeleteClick(scope.row)" type="text" size="small">删除</el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--        </el-table>-->
         <d2-crud
           :columns="columns"
           :data="tableData"
@@ -257,24 +257,24 @@ export default {
       this.searchInput.flag = ''
     },
     refreshTable () {
-      let This = this
-      this.$apollo.query({
-        // Query
-        query: gql`query(){
-                 selectAllPhone()
-                      {
-                          number,
-                          flag
-                      }
-       }`,
-        variables: {
-
-        }
-      }).then(res => {
-        This.tableData = res.data.selectAllPhone
-      }).catch(error => {
-        console.log(error)
-      })
+      // let This = this
+      // this.$apollo.query({
+      //   // Query
+      //   query: gql`query(){
+      //            selectAllPhone()
+      //                 {
+      //                     number,
+      //                     flag
+      //                 }
+      //  }`,
+      //   variables: {
+      //
+      //   }
+      // }).then(res => {
+      //   This.tableData = res.data.selectAllPhone
+      // }).catch(error => {
+      //   console.log(error)
+      // })
     },
     // 分页--start
     paginationCurrentChange (currentPage) {
@@ -286,8 +286,8 @@ export default {
       this.loading = true
       this.$apollo.query({
         // Query
-        query: gql`query($pageNumber:Int){
-               selectAllPhone(pageNumber:$currentPage)
+        query: gql`query($currentPage:Int){
+               selectAllPhone(currentPage:$currentPage)
                       {
                           number,
                           flag
@@ -298,7 +298,7 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data.selectAllPhone
-        this.pagination.total = this.tableData.length
+        //this.pagination.total = this.tableData.length
         this.loading = false
       }).catch(error => {
         console.log(error)
