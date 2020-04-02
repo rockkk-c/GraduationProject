@@ -53,7 +53,7 @@
           </el-table-column>
         </el-table>
         <d2-crud
-
+          :columns="columns"
           :data="tableData"
           :loading="loading"
           :pagination="pagination"
@@ -260,14 +260,15 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query{
-                 selectAllPhone
+        query: gql`query(){
+                 selectAllPhone()
                       {
                           number,
                           flag
                       }
        }`,
         variables: {
+
         }
       }).then(res => {
         This.tableData = res.data.selectAllPhone
@@ -285,14 +286,15 @@ export default {
       this.loading = true
       this.$apollo.query({
         // Query
-        query: gql`query{
-               selectAllPhone
+        query: gql`query($pageNumber:Int){
+               selectAllPhone(pageNumber:$currentPage)
                       {
                           number,
                           flag
                       }
        }`,
         variables: {
+          currentPage: this.currentPage
         }
       }).then(res => {
         this.tableData = res.data.selectAllPhone
