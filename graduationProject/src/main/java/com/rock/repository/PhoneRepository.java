@@ -50,8 +50,8 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 查询所有phone
      */
-    @Query("match (n:Phone) return n skip ({currentPage}-1)*10 limit 10")
-    List<Phone> selectAllPhone(@Param("currentPage") int currentPage);
+    @Query("match (n:Phone) return n ")
+    List<Phone> selectAllPhone();
 
     /**
      * 查看机主
