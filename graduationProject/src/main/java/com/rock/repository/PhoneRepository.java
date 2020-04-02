@@ -2,12 +2,15 @@ package com.rock.repository;
 
 import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface PhoneRepository extends CrudRepository<Phone,Long> {
@@ -50,8 +53,8 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 查询所有phone
      */
-    @Query("match (n:Phone) return n ")
-    List<Phone> selectAllPhone();
+//    @Query("match (n:Phone) return n ")
+//    List<Phone> selectAllPhone();
 
     /**
      * 查看机主
@@ -64,5 +67,9 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
      **/
     @Query("MATCH (n:Phone) return count(n)")
     int countOfPhone();
+
+    @Query(value = "match (n:Phone) return n ",
+            countQuery="match (n:Phone) return count(n)")
+    Page<Phone> selectAllPhone(@Param("pageable")Pageable pageable);
 
 }

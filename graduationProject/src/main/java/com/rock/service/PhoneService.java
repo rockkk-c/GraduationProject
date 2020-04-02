@@ -9,11 +9,15 @@ import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.javassist.runtime.Desc;
 import org.neo4j.driver.internal.shaded.io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -58,9 +62,14 @@ public class PhoneService {
     }
 
     @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
-    public List<Phone> selectAllPhone() {
-        return phoneRepository.selectAllPhone();
+    public Page<Phone> selectAllPhone(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage) {
+        return phoneRepository.selectAllPhone( PageRequest.of(currentPage,10));
     }
+//
+//    @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
+//    public List<Phone> selectAllPhone() {
+//        return phoneRepository.selectAllPhone();
+//    }
 
     @GraphQLQuery(name = "selectPhoneOwner", description = "查看机主")
     public List<Person> selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number) {
