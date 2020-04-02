@@ -9,6 +9,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
@@ -58,9 +60,8 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 查看机主
      */
-    @Query(value="MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n",
-            countQuery="MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return count(n)")
-    Page<Person> selectPhoneOwner(@Param("number") String number,@Param("pageable")Pageable pageable);
+    @Query("MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n")
+    List<Person> selectPhoneOwner(@Param("number") String number);
 
     /**
      *  首页显示-Phone数量

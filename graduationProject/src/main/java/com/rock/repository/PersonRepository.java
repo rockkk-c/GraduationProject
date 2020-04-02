@@ -134,9 +134,8 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     /**
      * 根据Person的id查询其进件
      */
-    @Query(value = "MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return a",
-    countQuery = "MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return count(a)")
-    Page<Applicant> selecApplicantByPId(@Param("id") String id,@Param("pageable")Pageable pageable);
+    @Query( "MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return a")
+    List<Applicant> selecApplicantByPId(@Param("id") String id);
 
     /**
      *  首页显示-Person数量

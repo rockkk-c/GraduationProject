@@ -59,12 +59,12 @@ public class PhoneService {
     public Page<Phone> loadListOfPhone(@GraphQLArgument(name = "flag", description = "flag") String flag,
                                              @GraphQLArgument(name = "number", description = "number") String number,
                                        @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage) {
-        return phoneRepository.loadListOfPhone(flag,number, PageRequest.of(currentPage,10));
+        return phoneRepository.loadListOfPhone(flag,number, PageRequest.of(currentPage-1,10));
     }
 
     @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
     public Page<Phone> selectAllPhone(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage) {
-        return phoneRepository.selectAllPhone( PageRequest.of(currentPage,10));
+        return phoneRepository.selectAllPhone( PageRequest.of(currentPage-1,10));
     }
 //
 //    @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
@@ -73,9 +73,8 @@ public class PhoneService {
 //    }
 
     @GraphQLQuery(name = "selectPhoneOwner", description = "查看机主")
-    public Page<Person> selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number,
-                                         @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage) {
-        return phoneRepository.selectPhoneOwner(number, PageRequest.of(currentPage,10));
+    public List<Person> selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number) {
+        return phoneRepository.selectPhoneOwner(number);
     }
 
     @GraphQLMutation(name = "updatePhoneByNumber", description = "根据Phone的number修改其黑白名单状态")

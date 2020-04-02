@@ -69,18 +69,17 @@ public class PersonService {
 
     @GraphQLQuery(name="selectAllPerson",description = "查询所有Person")
     public Page<Person> selectAllPerson(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
-        return personRepository.selectAllPerson( PageRequest.of(currentPage,10));
+        return personRepository.selectAllPerson( PageRequest.of(currentPage-1,10));
     }
     @GraphQLQuery(name="selectPerson",description = "按条件查询Person")
     public Page<Person> selectPerson(@GraphQLArgument(name="person",description = "person")Person person,
                                      @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
-        return personRepository.selectPerson(person.getId(),person.getName(),person.getSex(),person.getNumber(),person.getFlag(), PageRequest.of(currentPage,10));
+        return personRepository.selectPerson(person.getId(),person.getName(),person.getSex(),person.getNumber(),person.getFlag(), PageRequest.of(currentPage-1,10));
     }
 
     @GraphQLQuery(name="selecApplicantByPId",description = "根据Person的id查询其进件")
-    public Page<Applicant> selecApplicantByPId(@GraphQLArgument(name="id",description = "id")String id,
-                                               @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
-        return personRepository.selecApplicantByPId(id, PageRequest.of(currentPage,10));
+    public List<Applicant> selecApplicantByPId(@GraphQLArgument(name="id",description = "id")String id){
+        return personRepository.selecApplicantByPId(id);
     }
 
     @GraphQLMutation(name="updatePersonById",description = "修改Person")
@@ -127,7 +126,7 @@ public class PersonService {
                                       @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
 
 
-        return personRepository.fakeInfoCheck(id, PageRequest.of(currentPage,10));
+        return personRepository.fakeInfoCheck(id, PageRequest.of(currentPage-1,10));
     }
     @GraphQLQuery(name = "fakeInfoCheckCount", description = "不同申请人有相同的电话")
     public int fakeInfoCheckCount(@GraphQLArgument(name = "id", description = "id")String id){
