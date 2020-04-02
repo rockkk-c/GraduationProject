@@ -2,6 +2,8 @@ package com.rock.repository;
 
 import com.rock.nodeEntity.Applicant;
 import com.rock.nodeEntity.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -78,7 +80,7 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
      * 不同申请人有相同的电话返回List<Person>
      */
     @Query("match (a1:Applicant)<-[]-(p1:Person)-[:HAS_PHONE]->(:Phone)<-[:HAS_PHONE]-(p:Person)-[]->(a:Applicant) where a1.id={id} return p,p1")
-    List<Person> fakeInfoCheck(@Param("id") String id);
+    Page<Person> fakeInfoCheck(@Param("id") String id,@Param("pageable") Pageable pageable);
 
     /*
      * 根据Applicant.id查询person
@@ -117,21 +119,24 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     /**
      * 查询所有Person
      */
-    @Query("match (n:Person) return n")
-    List<Person> selectAllPerson();
+    @Query(value = "match (n:Person) return n",
+    countQuery = "match (n:Person) return count(n)")
+    Page<Person> selectAllPerson(@Param("pageable")Pageable pageable);
 
     /**
      * 按条件查询Person
      */
-    @Query("match (n:Person) WHERE n.id={id} or  n.name={name} or n.sex={sex} or n.number={number} or n.flag={flag} return n")
-    List<Person> selectPerson(@Param("id") String id,@Param("name") String name,@Param("sex") String sex,
-                               @Param("number") String number,@Param("flag") String flag);
+    @Query(value = "match (n:Person) WHERE n.id={id} or  n.name={name} or n.sex={sex} or n.number={number} or n.flag={flag} return n",
+    countQuery = "match (n:Person) WHERE n.id={id} or  n.name={name} or n.sex={sex} or n.number={number} or n.flag={flag} return count(n)")
+    Page<Person> selectPerson(@Param("id") String id,@Param("name") String name,@Param("sex") String sex,
+                               @Param("number") String number,@Param("flag") String flag,@Param("pageable")Pageable pageable);
 
     /**
      * 根据Person的id查询其进件
      */
-    @Query("MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return a")
-    List<Applicant> selecApplicantByPId(@Param("id") String id);
+    @Query(value = "MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return a",
+    countQuery = "MATCH (n:Person)-[:APPLY]-(a:Applicant) where n.id={id} return count(a)")
+    Page<Applicant> selecApplicantByPId(@Param("id") String id,@Param("pageable")Pageable pageable);
 
     /**
      *  首页显示-Person数量

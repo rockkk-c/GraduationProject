@@ -15,6 +15,8 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,17 +68,19 @@ public class PersonService {
     }
 
     @GraphQLQuery(name="selectAllPerson",description = "查询所有Person")
-    public List<Person> selectAllPerson(){
-        return personRepository.selectAllPerson();
+    public Page<Person> selectAllPerson(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return personRepository.selectAllPerson( PageRequest.of(currentPage,10));
     }
     @GraphQLQuery(name="selectPerson",description = "按条件查询Person")
-    public List<Person> selectPerson(@GraphQLArgument(name="person",description = "person")Person person){
-        return personRepository.selectPerson(person.getId(),person.getName(),person.getSex(),person.getNumber(),person.getFlag());
+    public Page<Person> selectPerson(@GraphQLArgument(name="person",description = "person")Person person,
+                                     @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return personRepository.selectPerson(person.getId(),person.getName(),person.getSex(),person.getNumber(),person.getFlag(), PageRequest.of(currentPage,10));
     }
 
     @GraphQLQuery(name="selecApplicantByPId",description = "根据Person的id查询其进件")
-    public List<Applicant> selecApplicantByPId(@GraphQLArgument(name="id",description = "id")String id){
-        return personRepository.selecApplicantByPId(id);
+    public Page<Applicant> selecApplicantByPId(@GraphQLArgument(name="id",description = "id")String id,
+                                               @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return personRepository.selecApplicantByPId(id, PageRequest.of(currentPage,10));
     }
 
     @GraphQLMutation(name="updatePersonById",description = "修改Person")
@@ -119,10 +123,11 @@ public class PersonService {
         return personRepository.getTwoDimenRelationshipPhoneBFCountByApplyId(applyId);
     }
     @GraphQLQuery(name = "fakeInfoCheck", description = "不同申请人有相同的电话")
-    public List<Person> fakeInfoCheck(@GraphQLArgument(name = "id", description = "applyId")String id){
+    public Page<Person> fakeInfoCheck(@GraphQLArgument(name = "id", description = "applyId")String id,
+                                      @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
 
 
-        return personRepository.fakeInfoCheck(id);
+        return personRepository.fakeInfoCheck(id, PageRequest.of(currentPage,10));
     }
     @GraphQLQuery(name = "fakeInfoCheckCount", description = "不同申请人有相同的电话")
     public int fakeInfoCheckCount(@GraphQLArgument(name = "id", description = "id")String id){

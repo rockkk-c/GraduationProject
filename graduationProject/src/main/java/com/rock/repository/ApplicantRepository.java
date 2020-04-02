@@ -2,6 +2,8 @@ package com.rock.repository;
 
 import com.rock.nodeEntity.Applicant;
 import com.rock.nodeEntity.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
@@ -86,17 +88,20 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
     /**
      *  查询所有Applicant
      **/
-    @Query("MATCH (n:Applicant) RETURN n")
-    List<Applicant> selectAllApplicant();
+    @Query(value = "MATCH (n:Applicant) RETURN n",
+    countQuery = "MATCH (n:Applicant) RETURN count(n)")
+    Page<Applicant> selectAllApplicant(@Param("pageable") Pageable pageable);
     /**
      *  按条件查询Applicant
      **/
-    @Query("MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone}" +
-            "or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN n")
-    List<Applicant> selectApplicant(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
+    @Query(value = "MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone}" +
+            "or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN n",
+    countQuery = "MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone}\" +\n" +
+            "            \"or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN count(n)")
+    Page<Applicant> selectApplicant(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
                                     @Param("job")String job,@Param("city")String city,@Param("parent_phone")String parent_phone,
                                     @Param("colleague_phone")String colleague_phone,@Param("company_phone")String company_phone,
-                                    @Param("status")String status);
+                                    @Param("status")String status,@Param("pageable") Pageable pageable);
 
     /**
      *  修改Applicant
@@ -128,20 +133,24 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
      **/
 //    @Query("MATCH (n:Applicant) where n.status ="" or n.status=~"(?i)NULL" RETURN n")
 //    List<Applicant> allNullStatus1();
-    @Query("MATCH (n:Applicant) where n.status IS NULL RETURN n")
-    List<Applicant> allNullStatus();
+    @Query(value = "MATCH (n:Applicant) where n.status IS NULL RETURN n",
+    countQuery = "MATCH (n:Applicant) where n.status IS NULL RETURN count(n)")
+    Page<Applicant> allNullStatus( @Param("pageable") Pageable pageable);
     /**
      *  按条件查询Applicant
      **/
-    @Query("MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN n")
-    List<Applicant> selectNullStatus(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
-                                    @Param("job")String job,@Param("city")String city,@Param("applicant")String applicant);
+    @Query(value = "MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN n",
+    countQuery = "MATCH (n:Applicant) where n.status IS NULL and (n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.applicant={applicant} RETURN count(n)")
+    Page<Applicant> selectNullStatus(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
+                                    @Param("job")String job,@Param("city")String city,@Param("applicant")String applicant,
+                                     @Param("pageable") Pageable pageable);
 
     /**
      *  按状态查询-查询通过信息检测的Applicant
      **/
-    @Query("MATCH (n:Applicant) where n.status={status} RETURN n")
-    List<Applicant> selectThroughInfoTest(@Param("status")String status);
+    @Query(value = "MATCH (n:Applicant) where n.status={status} RETURN n",
+    countQuery = "MATCH (n:Applicant) where n.status={status} RETURN count(n)")
+    Page<Applicant> selectThroughInfoTest(@Param("status")String status,@Param("pageable") Pageable pageable);
     /**
      *  将Applicant状态改为通过信息检测/风险预测
      **/

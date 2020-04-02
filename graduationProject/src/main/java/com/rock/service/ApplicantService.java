@@ -17,6 +17,8 @@ import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.internal.shaded.io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -319,14 +321,15 @@ public class ApplicantService {
     }
 
     @GraphQLQuery(name="selectAllApplicant",description = "查询所有Applicant")
-    public List<Applicant> selectAllApplicant(){
-        return applicantRepository.selectAllApplicant();
+    public Page<Applicant> selectAllApplicant(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.selectAllApplicant( PageRequest.of(currentPage,10));
     }
 
     @GraphQLQuery(name="selectApplicant",description = "按条件查询Applicant")
-    public List<Applicant> selectApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
+    public Page<Applicant> selectApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant,
+                                           @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
         return applicantRepository.selectApplicant(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity()
-        ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus());
+        ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus(), PageRequest.of(currentPage,10));
     }
     @GraphQLMutation(name="updateApplicant",description = "修改Applicant")
     public Result updateApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
@@ -348,18 +351,19 @@ public class ApplicantService {
     }
 
     @GraphQLQuery(name="allNullStatus",description = "所有Applicant.status为空的Applicant")
-    public List<Applicant> allNullStatus(){
-        return applicantRepository.allNullStatus();
+    public Page<Applicant> allNullStatus(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.allNullStatus( PageRequest.of(currentPage,10));
     }
 
     @GraphQLQuery(name="selectNullStatus",description = "按条件查询Applicant.status为空的Applicant")
-    public  List<Applicant> selectNullStatus(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
+    public  Page<Applicant> selectNullStatus(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant,
+                                             @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
         return applicantRepository.selectNullStatus(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity(),
-                applicant.getApplicant());
+                applicant.getApplicant(), PageRequest.of(currentPage,10));
     }
     @GraphQLQuery(name="selectThroughInfoTest",description = "按状态查询-查询通过信息检测的Applicant")
-    public List<Applicant> selectThroughInfoTest(){
-        return applicantRepository.selectThroughInfoTest("ThroughInfoTest");
+    public Page<Applicant> selectThroughInfoTest(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.selectThroughInfoTest("ThroughInfoTest", PageRequest.of(currentPage,10));
     }
     @GraphQLMutation(name="updateApplyInfoTest",description = "将Applicant状态改为通过信息检测")
     public Result updateApplyInfoTest(@GraphQLArgument(name="id",description = "id")String id){

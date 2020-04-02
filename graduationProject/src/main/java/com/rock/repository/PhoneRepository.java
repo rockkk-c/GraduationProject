@@ -9,9 +9,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-
 @Repository
 public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
@@ -23,8 +20,9 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 根据flag查询Phone
      */
-    @Query("match (n:Phone) where n.flag={flag} return n")
-    List<Phone> loadListOfPhoneByFlag(@Param("flag") String flag);
+    @Query(value = "match (n:Phone) where n.flag={flag} return n",
+    countQuery = "match (n:Phone) where n.flag={flag} return count(n)")
+    Page<Phone> loadListOfPhoneByFlag(@Param("flag") String flag,@Param("pageable")Pageable pageable);
 
     /**
      * 根据number修改Phone的黑白名单状态
@@ -47,8 +45,9 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 根据number或phone查询Phone
      */
-    @Query("match (n:Phone) where n.flag={flag} or n.number={number} return n")
-    List<Phone> loadListOfPhone(@Param("flag") String flag,@Param("number") String number);
+    @Query(value="match (n:Phone) where n.flag={flag} or n.number={number} return n",
+            countQuery="match (n:Phone) where n.flag={flag} or n.number={number} return count(n)")
+    Page<Phone> loadListOfPhone(@Param("flag") String flag,@Param("number") String number,@Param("pageable")Pageable pageable);
 
     /**
      * 查询所有phone
@@ -59,8 +58,9 @@ public interface PhoneRepository extends CrudRepository<Phone,Long> {
     /**
      * 查看机主
      */
-    @Query("MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n")
-    List<Person> selectPhoneOwner(@Param("number") String number);
+    @Query(value="MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return n",
+            countQuery="MATCH (n:Person)-[:HAS_PHONE]->(a:Phone) where n.number={number} return count(n)")
+    Page<Person> selectPhoneOwner(@Param("number") String number,@Param("pageable")Pageable pageable);
 
     /**
      *  首页显示-Phone数量
