@@ -17,16 +17,15 @@ import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.internal.shaded.io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @GraphQLApi
@@ -92,9 +91,9 @@ public class ApplicantService {
      *
      * @return
      */
-    @GraphQLQuery(name = "verifyTheOnlyApplicacnt", description = "检验featureData是否已经存在")
-    public boolean verifyTheOnlyApplicacnt(@GraphQLArgument(name = "applyId", description = "applyId") String applyId) {
-        if (Objects.isNull(this.applicantRepository.selectApplicantById(applyId))) {
+    @GraphQLQuery(name = "verifyTheOnlyApplicacnt", description = "检验Applicacnt是否已经存在")
+    public boolean verifyTheOnlyApplicacnt(@GraphQLArgument(name = "id", description = "id") String id) {
+        if (Objects.isNull(this.applicantRepository.selectApplicantById(id))) {
             return false;
         }
         return true;
@@ -113,7 +112,7 @@ public class ApplicantService {
         return Result.ok("得到特征数值表成功");
     }
 
-    @GraphQLQuery(name = "BFPredict", description = "仅获取7个特征值，用来预测")
+    @GraphQLQuery(name = "BFPredict", description = "仅获取7个特征值，用来预测,训练模型用，实际项目不用这个接口")
     public List<Integer> BFPredict(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
         int[] features=new int[7];
         List<Integer> list=new ArrayList<>();
@@ -126,9 +125,75 @@ public class ApplicantService {
         list.add(personRepository.getTwoDimenRelationshipPhoneBFCountByApplyId(applyId));
         return list;
     }
+    /**
+     *
+     *  预测结果分析-----------------start
+     * */
+    @GraphQLQuery(name = "overdueDetails", description = "1.预测结果分析表单-逾期详情")
+    public List<Applicant> overdueDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.overdueDetails(applyId);
+    }
+    @GraphQLQuery(name = "OneDimenRelationshipBFDetails", description = "4.预测结果分析表单一维关系中触碰黑名单的人-详情")
+    public List<Person> OneDimenRelationshipBFDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.OneDimenRelationshipBFDetails(applyId);
+    }
+    @GraphQLQuery(name = "OneDimenRelationshipPhoneBFDetails", description = "5.预测结果分析表单，一维关系中触碰黑名单的电话-详情")
+    public List<Person> OneDimenRelationshipPhoneBFDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.OneDimenRelationshipPhoneBFDetails(applyId);
+    }
+    @GraphQLQuery(name = "TwoDimenRelationshipBFDetails", description = "6.预测结果分析表单-二维关系中触碰黑名单的人-详情")
+    public List<Person> TwoDimenRelationshipBFDetails(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.TwoDimenRelationshipBFDetails(applyId);
+    }
+    @GraphQLQuery(name = "TwoDimenRelationshipPhoneBFDetals", description = "7.预测结果分析表单-二维关系中触碰黑名单的电话-详情")
+    public List<Person> TwoDimenRelationshipPhoneBFDetals(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
+        return personRepository.TwoDimenRelationshipPhoneBFDetals(applyId);
+    }
+
+    @GraphQLQuery(name = "resultDetails", description = "预测结果分析表单-详情")
+    public Map<String,Object> resultDetails(@GraphQLArgument(name = "id", description = "Applicant的id:applyId") String id) throws Exception {
+        List<Integer> list=this.BFPredict(id);
+        Map<String,Object> map = new HashMap<>();
+        map.put("predictResult",this.invokePython(id));
+        if(list.get(0)!=0){
+            map.put("overdueDetails",this.overdueDetails(id));
+
+        }
+        if(list.get(1)!=0){
+            map.put("clientBF","此客户处于黑名单");
+        }else{
+            map.put("clientBF","此客户处于白名单");
+        }
+        if(list.get(2)!=0){
+            map.put("clientPhoneBF","此客户手机号处于黑名单");
+        }else{
+            map.put("clientPhoneBF","此客户手机号处于白名单");
+        }
+        if(list.get(3)!=0){
+            map.put("OneDimenRelationshipBFDetails",this.OneDimenRelationshipBFDetails(id));
+        }
+        if(list.get(4)!=0){
+            map.put("OneDimenRelationshipPhoneBFDetails",this.OneDimenRelationshipPhoneBFDetails(id));
+        }
+        if(list.get(5)!=0){
+            map.put("TwoDimenRelationshipBFDetails",this.TwoDimenRelationshipBFDetails(id));
+        }
+        if(list.get(6)!=0){
+            map.put("TwoDimenRelationshipPhoneBFDetals",this.TwoDimenRelationshipPhoneBFDetals(id));
+        }
+        return map;
+    }
+    /**
+     *
+     *  预测结果分析-----------------end
+    * */
     @GraphQLQuery(name = "invokePython", description = "调用python的http接口，返回预测结果")
-    public PyResult invokePython(@GraphQLArgument(name = "applyId", description = "Applicant的id:applyId") String applyId) throws Exception {
-        List<Integer> list=BFPredict(applyId);
+    public PyResult invokePython(@GraphQLArgument(name = "id", description = "Applicant的id") String id) throws Exception {
+        List<Integer> list=BFPredict(id);
+        if(list.get(1)==1){
+            PyResult res=new PyResult("0");
+            return res;
+        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://127.0.0.1:8887/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -150,7 +215,7 @@ public class ApplicantService {
 
     @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
     public Result  addApplicant(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant){
-        if(!this.verifyTheOnlyApplicacnt(applicant.getId())){
+        if(this.verifyTheOnlyApplicacnt(applicant.getId())==true){
             return Result.error("此Applicant的id已存在，请重新输入");
         }
 
@@ -244,15 +309,70 @@ public class ApplicantService {
     }
 
     @GraphQLMutation(name = "deleteApplicantById", description = "根据Applicant的id删除Applicant")
-    public Result deleteApplicantById(@GraphQLArgument(name="applyId",description = "Applicant的id")String applyId){
-        if(!this.verifyTheOnlyApplicacnt(applyId)){
+    public Result deleteApplicantById(@GraphQLArgument(name="id",description = "Applicant的id")String id){
+        if(!this.verifyTheOnlyApplicacnt(id)){
             return Result.error("此进件不存在！");
-        }else if(StringUtil.isNullOrEmpty(applyId)){
+        }else if(StringUtil.isNullOrEmpty(id)){
             return Result.error("请选择要删除的进件！");
         }else {
-            applicantRepository.deleteApplicantById(applyId);
+            applicantRepository.deleteApplicantById(id);
             return Result.ok("删除成功");
         }
+    }
 
+    @GraphQLQuery(name="selectAllApplicant",description = "查询所有Applicant")
+    public Page<Applicant> selectAllApplicant(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.selectAllApplicant( PageRequest.of(currentPage-1,10));
+    }
+
+    @GraphQLQuery(name="selectApplicant",description = "按条件查询Applicant")
+    public Page<Applicant> selectApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant,
+                                           @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.selectApplicant(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity()
+        ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus(), PageRequest.of(currentPage-1,10));
+    }
+    @GraphQLMutation(name="updateApplicant",description = "修改Applicant")
+    public Result updateApplicant(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant){
+        applicantRepository.updateApplicant1(applicant.getId());
+        applicantRepository.updateApplicant2(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity()
+                ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus());
+        applicantRepository.createColleaguePhone();
+        applicantRepository.createCompanyPhone();
+        applicantRepository.createParentPhone();
+        return Result.ok("修改成功！");
+    }
+    @GraphQLQuery(name="selectPersonByApplicant",description = "查看客户")
+    public List<Person> selectPersonByApplicant(@GraphQLArgument(name="id",description = "Applicant.id")String id){
+        return applicantRepository.selectPersonByApplicant(id);
+    }
+    @GraphQLQuery(name="countOfApplicant",description = "首页显示-Applicant数量")
+    public int countOfApplicant(){
+        return applicantRepository.countOfApplicant();
+    }
+
+    @GraphQLQuery(name="allNullStatus",description = "所有Applicant.status为空的Applicant")
+    public Page<Applicant> allNullStatus(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.allNullStatus( PageRequest.of(currentPage-1,10));
+    }
+
+    @GraphQLQuery(name="selectNullStatus",description = "按条件查询Applicant.status为空的Applicant")
+    public  Page<Applicant> selectNullStatus(@GraphQLArgument(name="applicant",description = "applicant")Applicant applicant,
+                                             @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.selectNullStatus(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity(),
+                applicant.getApplicant(), PageRequest.of(currentPage-1,10));
+    }
+    @GraphQLQuery(name="selectThroughInfoTest",description = "按状态查询-查询通过信息检测的Applicant")
+    public Page<Applicant> selectThroughInfoTest(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return applicantRepository.selectThroughInfoTest("ThroughInfoTest", PageRequest.of(currentPage-1,10));
+    }
+    @GraphQLMutation(name="updateApplyInfoTest",description = "将Applicant状态改为通过信息检测")
+    public Result updateApplyInfoTest(@GraphQLArgument(name="id",description = "id")String id){
+        applicantRepository.updateApplyRiskStatus(id,"ThroughInfoTest");
+        return Result.ok("修改成功");
+    }
+    @GraphQLMutation(name="updateApplyRiskStatus",description = "将Applicant状态改为通过风险预测,进件进入到申请中状态")
+    public Result updateApplyRiskStatus(@GraphQLArgument(name="id",description = "id")String id){
+        applicantRepository.updateApplyRiskStatus(id,"IN_PROGREESS");
+        return Result.ok("修改成功");
     }
 }

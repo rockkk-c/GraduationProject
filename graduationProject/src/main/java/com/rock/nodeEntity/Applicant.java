@@ -18,6 +18,7 @@ public class Applicant {
     private String id;
     private String amount;
     private String term;
+   //private Integer term;
     private String job;
     private String city;
     @Relationship(type = "PARENT_PHONE", direction = Relationship.INCOMING)

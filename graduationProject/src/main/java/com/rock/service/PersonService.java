@@ -3,8 +3,10 @@ package com.rock.service;
 
 import com.rock.entity.Result;
 import com.rock.mapper.FeatureDataMapper;
+import com.rock.nodeEntity.Applicant;
 import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
+import com.rock.repository.ApplicantRepository;
 import com.rock.repository.HasPhoneRepository;
 import com.rock.repository.PersonRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -13,6 +15,8 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +33,9 @@ public class PersonService {
     @Autowired
     private FeatureDataMapper featureDataMapper;
     @Autowired
-    private PhService phoneService;
+    private PhoneService phoneService;
+    @Autowired
+    private ApplicantRepository applicantRepository;
     @GraphQLMutation(name = "addPerson", description = "添加Person实体结点,同时添加Phone结点，并创建实体结点间关系")
     public Result addPerson(@GraphQLArgument(name = "person", description = "规则id")Person person){
 
@@ -55,6 +61,38 @@ public class PersonService {
         return Result.ok("添加Person成功");
 
     }
+    @GraphQLMutation(name="deletePersonById",description = "根据id删除Person")
+    public Result deletePersonById(@GraphQLArgument(name="id",description = "Person的id")String id){
+        personRepository.deletePersonById(id);
+        return Result.ok("删除成功！");
+    }
+
+    @GraphQLQuery(name="selectAllPerson",description = "查询所有Person")
+    public Page<Person> selectAllPerson(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return personRepository.selectAllPerson( PageRequest.of(currentPage-1,10));
+    }
+    @GraphQLQuery(name="selectPerson",description = "按条件查询Person")
+    public Page<Person> selectPerson(@GraphQLArgument(name="person",description = "person")Person person,
+                                     @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+        return personRepository.selectPerson(person.getId(),person.getName(),person.getSex(),person.getNumber(),person.getFlag(), PageRequest.of(currentPage-1,10));
+    }
+
+    @GraphQLQuery(name="selecApplicantByPId",description = "根据Person的id查询其进件")
+    public List<Applicant> selecApplicantByPId(@GraphQLArgument(name="id",description = "id")String id){
+        return personRepository.selecApplicantByPId(id);
+    }
+
+    @GraphQLMutation(name="updatePersonById",description = "修改Person")
+    public Result updatePersonById(@GraphQLArgument(name="person",description = "person")Person person){
+        personRepository.updatePersonById1(person.getId());
+        personRepository.updatePersonById2(person.getId(),person.getName(),person.getSex(),person.getFlag(),person.getNumber());
+        personRepository.createHasPhone();
+        applicantRepository.createColleaguePhone();
+        applicantRepository.createCompanyPhone();
+        applicantRepository.createParentPhone();
+        return Result.ok("修改成功！");
+    }
+
     @GraphQLQuery(name = "getoverdueCountByApplyId", description = "进件的申请人之前的逾期数")
     public int getoverdueCountByApplyId(@GraphQLArgument(name = "applyId", description = "applyId")String applyId){
         return personRepository.getoverdueCountByApplyId(applyId);
@@ -84,15 +122,18 @@ public class PersonService {
         return personRepository.getTwoDimenRelationshipPhoneBFCountByApplyId(applyId);
     }
     @GraphQLQuery(name = "fakeInfoCheck", description = "不同申请人有相同的电话")
-    public List<Person> fakeInfoCheck(@GraphQLArgument(name = "applyId", description = "applyId")String applyId){
+    public Page<Person> fakeInfoCheck(@GraphQLArgument(name = "id", description = "applyId")String id,
+                                      @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
 
-        //return CollectionUtils.arrayToList( personRepository.fakeInfoCheck(applyId) );
-        return personRepository.fakeInfoCheck(applyId);
+
+        return personRepository.fakeInfoCheck(id, PageRequest.of(currentPage-1,10));
     }
-
+    @GraphQLQuery(name = "fakeInfoCheckCount", description = "不同申请人有相同的电话")
+    public int fakeInfoCheckCount(@GraphQLArgument(name = "id", description = "id")String id){
+        return personRepository.fakeInfoCheckCount(id);
+    }
     @GraphQLQuery(name = "getPersonById", description = "根据id查询Person")
     public Person getPersonById(@GraphQLArgument(name = "applyId", description = "applyId")String applyId){
-        //return CollectionUtils.arrayToList( personRepository.fakeInfoCheck(applyId) );
         return personRepository.getPersonById(applyId);
     }
     /**
@@ -107,6 +148,9 @@ public class PersonService {
         }
         return true;
     }
-
+    @GraphQLQuery(name="countOfPerson",description = "首页显示-Person数量")
+    public int countOfPerson(){
+        return personRepository.countOfPerson();
+    }
 
 }

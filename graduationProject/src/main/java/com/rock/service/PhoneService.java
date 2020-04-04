@@ -1,6 +1,7 @@
 package com.rock.service;
 
 import com.rock.entity.Result;
+import com.rock.nodeEntity.Person;
 import com.rock.nodeEntity.Phone;
 import com.rock.repository.PhoneRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -10,6 +11,8 @@ import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.internal.shaded.io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,14 +48,31 @@ public class PhoneService {
         }
         return true;
     }
-    @GraphQLQuery(name = "getPhoneByNumber", description = "通过号码查询Phone")
+ /*   @GraphQLQuery(name = "getPhoneByNumber", description = "通过号码查询Phone")
     public Phone getPhoneByNumber(@GraphQLArgument(name = "number", description = "number") String number) {
         return phoneRepository.getPhoneByNumber(number);
+    }*/
+
+    @GraphQLQuery(name = "loadListOfPhone", description = "通过条件查询Phone")
+    public Page<Phone> loadListOfPhone(@GraphQLArgument(name = "flag", description = "flag") String flag,
+                                             @GraphQLArgument(name = "number", description = "number") String number,
+                                       @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage) {
+        return phoneRepository.loadListOfPhone(flag,number, PageRequest.of(currentPage-1,10));
     }
 
-    @GraphQLQuery(name = "loadListOfPhoneByFlag", description = "通过号码查询Phone")
-    public List<Phone> loadListOfPhoneByFlag(@GraphQLArgument(name = "flag", description = "number") String flag) {
-        return phoneRepository.loadListOfPhoneByFlag(flag);
+    @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
+    public Page<Phone> selectAllPhone(@GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage) {
+        return phoneRepository.selectAllPhone( PageRequest.of(currentPage-1,10));
+    }
+//
+//    @GraphQLQuery(name = "selectAllPhone", description = "查看所有Phone")
+//    public List<Phone> selectAllPhone() {
+//        return phoneRepository.selectAllPhone();
+//    }
+
+    @GraphQLQuery(name = "selectPhoneOwner", description = "查看机主")
+    public List<Person> selectPhoneOwner(@GraphQLArgument(name = "number", description = "number") String number) {
+        return phoneRepository.selectPhoneOwner(number);
     }
 
     @GraphQLMutation(name = "updatePhoneByNumber", description = "根据Phone的number修改其黑白名单状态")
@@ -74,6 +94,11 @@ public class PhoneService {
         }
 
     }
+    @GraphQLQuery(name="countOfPhone",description = "首页显示-Phone数量")
+    public int countOfPhone(){
+        return phoneRepository.countOfPhone();
+    }
+
 }
 
 
