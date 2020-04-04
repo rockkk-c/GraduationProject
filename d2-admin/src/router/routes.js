@@ -34,7 +34,7 @@ const frameIn = [
         path: 'client-detail',
         name: 'client-detail',
         meta: {
-          title: '客户详情',
+          title: '查看进件的申请人',
           auth: true
         },
         component: _import('system/basic/client/client-detail')
@@ -52,7 +52,7 @@ const frameIn = [
         path: 'apply-detail',
         name: 'apply-detail',
         meta: {
-          title: '申请人详情',
+          title: '查看客户的进件列表',
           auth: true
         },
         component: _import('system/basic/apply/apply-detail')
@@ -84,7 +84,43 @@ const frameIn = [
         },
         component: _import('system/sys-setting/employee/emp-manage')
       },
-
+      {
+        path: 'info-detection',
+        name: 'info-detection',
+        meta: {
+          title: '信息检测',
+          auth: true
+        },
+        component: _import('system/risk-control/info-detection/info-detection')
+      },
+      {
+        path: 'detection-result',
+        name: 'detection-result',
+        meta: {
+          title: '信息检测结果',
+          auth: true
+        },
+        component: _import('system/risk-control/info-detection/detection-result')
+      },
+      {
+        path: 'risk-predict',
+        name: 'risk-predict',
+        meta: {
+          title: '风险预测',
+          auth: true
+        },
+        component: _import('system/risk-control/risk-predict/risk-predict')
+      },
+      //  风险预测结果
+      {
+        path: 'predict-result',
+        name: 'predict-result',
+        meta: {
+          title: '风险预测结果',
+          auth: true
+        },
+        component: _import('system/risk-control/risk-predict/predict-result')
+      },
       // 系统 前端日志
       {
         path: 'log',

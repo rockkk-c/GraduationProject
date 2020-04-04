@@ -21,7 +21,6 @@
                   <el-option label="管理员" value="admin"></el-option>
                   <el-option label="普通员工" value="staff"></el-option>
                 </el-select>
-                </el-input>
               </div>
 
             </div>
@@ -29,7 +28,8 @@
           <el-col :span="8">
             <div style="display: flex;align-items: center;justify-content: left;">
               <el-button type="primary" @click="search()">查询</el-button>
-              <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;" v-if="role=='admin'">新增员工</el-button>
+              <el-button type="primary" @click="resetClick()">重置</el-button>
+              <el-button @click="createBtnClick()" type="danger" style="margin-left: 20px;">新增员工</el-button>
             </div>
           </el-col>
         </el-row>
@@ -105,14 +105,14 @@
 </template>
 
 <script>
-  import gql from "graphql-tag"
-  export default {
-    methods: {
-      search(){
-        let This = this;
-        this.$apollo.query({
-          // Query
-          query: gql `query($empId: String!,$empName: String!,$role: String!){
+import gql from 'graphql-tag'
+export default {
+  methods: {
+    search () {
+      let This = this
+      this.$apollo.query({
+        // Query
+        query: gql`query($empId: String!,$empName: String!,$role: String!){
                    loadListOfEmployee(employee:{
                          id:$empId
                         name:$empName
@@ -123,63 +123,70 @@
                          role
                      }
            }`,
-          variables: {
-            empId: This.searchInput.empId,
-            empName: This.searchInput.empName,
-            role: This.searchInput.empRole,
-          }
-        }).then(res => {
-          console.log(res);
-          This.tableData = res.data.loadListOfEmployee
-        }).catch(error => {
-          console.log(error)
-        })
-      },
-      createBtnClick() {
-        this.dialogFormVisible = true
-      },
-      refreshTable(){
-        let This = this;
+        variables: {
+          empId: This.searchInput.empId,
+          empName: This.searchInput.empName,
+          role: This.searchInput.empRole
+        }
+      }).then(res => {
+        console.log(res)
+        This.tableData = res.data.loadListOfEmployee
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    createBtnClick () {
+      this.dialogFormVisible = true
+    },
+    //  重置
+    resetClick () {
+      this.refreshTable()
+      this.searchInput.empId = ''
+      this.searchInput.empName = ''
+      this.searchInput.empRole = ''
+    },
+    refreshTable () {
+      let This = this
 
-        this.$apollo.query({
-          // Query
-          query: gql `query{
+      this.$apollo.query({
+        // Query
+        query: gql`query{
                   selectAllEmployee{
                       id,
                       name,
                       role
                   }
            }`,
-          variables: {
-            // role: this.role,
-          }
-        }).then(res => {
-          This.tableData = res.data.selectAllEmployee;
-        }).catch(error => {
-          console.log(error)
-        })
-      },
-      handleClick(row) {
-        console.log(row)
-        this.$router.push({
-          path: 'client-detail',
-          query: {
-            name: '张三'
-          }
-        })
-      },
-      editEmp(row){
-        console.log(row);
-        this.updateForm.empId = row.id;
-        this.updateForm.empName = row.name;
-        this.updateForm.empRole = row.role;
-        this.dialogUpdateFormVisible = true;
-      },
-      updateBtn(){
-        let This = this;
-        this.$apollo.mutate({
-              // Query
-              mutation: gql`mutation ($id: String!,$empName: String!,$pwd: String!,$role: String!) {
+        variables: {
+          // role: this.role,
+        }
+      }).then(res => {
+        This.tableData = res.data.selectAllEmployee
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleClick (row) {
+      console.log(row)
+      this.$router.push({
+        path: 'client-detail',
+        query: {
+          name: '张三'
+        }
+      })
+    },
+    editEmp (row) {
+      console.log(row)
+      this.updateForm.empId = row.id
+      this.updateForm.empName = row.name
+      this.updateForm.empRole = row.role
+      this.dialogUpdateFormVisible = true
+    },
+    updateBtn () {
+      let This = this
+      this.$apollo.mutate({
+        // Query
+        mutation: gql`mutation ($id: String!,$empName: String!,$pwd: String!,$role: String!) {
                 updateEmp(employee:{
                        id:$id,
                        name:$empName,
@@ -190,42 +197,40 @@
                            message
                        }
               }`,
-              // Parameters
-              variables: {
-                id:This.updateForm.empId,
-                empName: This.updateForm.empName,
-                pwd:This.updateForm.empPwd==''?'123456':This.updateForm.empPwd,
-                role:This.updateForm.empRole
-              }
-        }).then(res=>{
-          console.log(res);
-          if (res.data.updateEmp.code == 0) {
-            This.updateTableData(This.updateForm.empId,This.updateForm.empName,This.updateForm.empRole);
-            This.$message({
-              message: '员工修改成功',
-              type: 'success'
-            });
-            This.dialogUpdateFormVisible = false;
-          }
-
-
-        }).catch(error=>{
-          console.log(error);
+        // Parameters
+        variables: {
+          id: This.updateForm.empId,
+          empName: This.updateForm.empName,
+          pwd: This.updateForm.empPwd === '' ? '123456' : This.updateForm.empPwd,
+          role: This.updateForm.empRole
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.updateEmp.code === 0) {
+          This.updateTableData(This.updateForm.empId, This.updateForm.empName, This.updateForm.empRole)
+          This.$message({
+            message: '员工修改成功',
+            type: 'success'
+          })
+          This.dialogUpdateFormVisible = false
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    createBtn () {
+      let This = this
+      console.log(this.form)
+      if (this.form.empName === '') {
+        this.$message({
+          message: '姓名不能为空',
+          type: 'warning'
         })
-      },
-      createBtn() {
-        let This = this;
-        console.log(this.form);
-        if(this.form.empName == ''){
-            this.$message({
-              message: '姓名不能为空',
-              type: 'warning'
-            });
-            this.dialogFormVisible = false;
-        }else{
-           this.$apollo.mutate({
-                 // Query
-                 mutation: gql`mutation ($empName: String!,$pwd: String!,$role: String!) {
+        this.dialogFormVisible = false
+      } else {
+        this.$apollo.mutate({
+          // Query
+          mutation: gql`mutation ($empName: String!,$pwd: String!,$role: String!) {
                    addEmployee(employee:{
                           name:$empName,
                           pwd:$pwd,
@@ -234,136 +239,130 @@
                               message
                           }
                  }`,
-                 // Parameters
-                 variables: {
-                   empName: This.form.empName,
-                   pwd:This.form.empPwd,
-                   role:This.form.empRole
-                 }
-           }).then(res=>{
-             if (res.data.addEmployee.code == 0) {
-               This.$message({
-                 message: '员工添加成功',
-                 type: 'success'
-               });
-               This.refreshTable();
-               This.dialogFormVisible = false;
+          // Parameters
+          variables: {
+            empName: This.form.empName,
+            pwd: This.form.empPwd,
+            role: This.form.empRole
+          }
+        }).then(res => {
+          if (res.data.addEmployee.code == 0) {
+            This.$message({
+              message: '员工添加成功',
+              type: 'success'
+            })
+            This.refreshTable()
+            This.dialogFormVisible = false
+          } else {
+            This.$message({
+              message: '员工添加失败,原因' + res.data.addEmployee.message,
+              type: 'error'
+            })
+            This.dialogFormVisible = false
+          }
+        }).catch(error => {
+          console.log(error)
+          This.$message({
+            message: '服务器接口异常',
+            type: 'error'
+          })
+          This.dialogFormVisible = false
+        })
+      }
+    },
 
-             }else{
-               This.$message({
-                 message: '员工添加失败,原因'+res.data.addEmployee.message,
-                 type: 'error'
-               });
-               This.dialogFormVisible = false;
-             }
-
-           }).catch(error=>{
-             console.log(error);
-               This.$message({
-                 message: '服务器接口异常',
-                 type: 'error'
-               });
-               This.dialogFormVisible = false;
-           })
-        }
-
-
-      },
-
-      handleDeleteClick(row) {
-        console.log(row);
-        let This = this;
-        this.$confirm('确认删除？')
-          .then(_ => {
-            this.$apollo.mutate({
-                  // Query
-                  mutation: gql`mutation ($id: String!) {
+    handleDeleteClick (row) {
+      console.log(row)
+      let This = this
+      this.$confirm('确认删除？')
+        .then(_ => {
+          this.$apollo.mutate({
+            // Query
+            mutation: gql`mutation ($id: String!) {
                     deleteEmp(employee:{
                            id:$id}){
                                code,
                                message
                            }
                   }`,
-                  // Parameters
-                  variables: {
-                    id: row.id+""
-                  }
-            }).then(res=>{
-               if (res.data.deleteEmp.code == 0) {
-                 This.deleteTableData(row.id);
-                 This.$message({
-                   message: '员工删除成功',
-                   type: 'success'
-                 });
-               }
-
-            }).catch(error=>{
-              console.log(error);
-            })
+            // Parameters
+            variables: {
+              id: row.id + ''
+            }
+          }).then(res => {
+            if (res.data.deleteEmp.code === 0) {
+              This.deleteTableData(row.id)
+              This.$message({
+                message: '员工删除成功',
+                type: 'success'
+              })
+            }
+          }).catch(error => {
+            console.log(error)
           })
-          .catch(_ => {
-            console.log('取消')
-          })
-      },
-      test() {
-        console.log(this.$store.state.role);
-      },
-      deleteTableData(id){
-        for(let i=0;i<this.tableData.length;i++){
-          if(this.tableData[i].id == id){
-            this.tableData.splice(i,1);
-            break;
-          }
-        }
-      },
-      updateTableData(id,name,role){
-        let This = this;
-        for(let i=0;i<This.tableData.length;i++){
-          if(This.tableData[i].id == id){
-            console.log("更新");
-            This.tableData[i].name=name;
-            This.tableData[i].role=role;
-            
-          }
+        })
+        .catch(_ => {
+          console.log('取消')
+        })
+    },
+    test () {
+      console.log(this.$store.state.role)
+    },
+    deleteTableData (id) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === id) {
+          this.tableData.splice(i, 1)
+          break
         }
       }
     },
-
-    created() {
-      this.role = this.$store.state.role;
-      this.refreshTable();
-    },
-    data() {
-      return {
-        // 显示删除
-        dialogVisible: false,
-        // 显示编辑
-        dialogUpdateFormVisible:false,
-        // 显示添加表单
-        dialogFormVisible: false,
-        formLabelWidth: '120px',
-        form: {
-          empName: '',
-          empPwd: '',
-          empRole: 'admin'
-        },
-        updateForm:{
-          empId:"",
-          empName: '',
-          empPwd: '',
-          empRole: 'admin'
-        },
-        // 角色
-        role: "",
-        searchInput: {
-          empId: '',
-          empName: '',
-          empRole: 'admin'
-        },
-        tableData: []
+    updateTableData (id, name, role) {
+      let This = this
+      for (let i = 0; i < This.tableData.length; i++) {
+        if (This.tableData[i].id === id) {
+          console.log('更新')
+          This.tableData[i].name = name
+          This.tableData[i].role = role
+        }
       }
     }
+  },
+
+  created () {
+    this.role = this.$store.state.role
+    this.refreshTable()
+  },
+  data () {
+    return {
+      // 显示删除
+      dialogVisible: false,
+      // 显示编辑
+      dialogUpdateFormVisible: false,
+      // 显示添加表单
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        empName: '',
+        empPwd: '',
+        empRole: 'admin'
+      },
+      updateForm: {
+        empId: '',
+        empName: '',
+        empPwd: '',
+        empRole: 'admin'
+      },
+      // 角色
+      role: '',
+      searchInput: {
+        empId: '',
+        empName: '',
+        empRole: 'admin'
+      },
+      tableData: []
+    }
   }
+}
 </script>
 
 <style>
