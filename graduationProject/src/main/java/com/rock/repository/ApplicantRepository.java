@@ -62,7 +62,7 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
      * 创建COLLEAGUE_OF关系2
      * */
     @Query("MATCH (n:Applicant) ,(n1:Applicant)\n" +
-            "WHERE n.colleague_phone = n1.colleague_phone\n" +
+            "WHERE n.colleague_phone = n1.colleague_phone AND n.id<>n1.id\n" +
             "merge (n)<-[r:COLLEAGUE_OF]->(n1)")
     void createColleagueOf2();
 
