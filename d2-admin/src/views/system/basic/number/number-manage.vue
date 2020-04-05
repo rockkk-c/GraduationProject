@@ -108,11 +108,19 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($flag:String,$number:String){
+        query: gql`query($flag:String,$number:String,$currentPage:Int!){
                   loadListOfPhone(flag:$flag,number:$number,currentPage:$currentPage)
                          {
+                           content{
                              number,
                              flag
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                          }
          }`,
         variables: {
@@ -123,6 +131,8 @@ export default {
       }).then(res => {
         console.log(res)
         This.tableData = res.data.loadListOfPhone.content
+        this.pagination.total = res.data.loadListOfPhone.totalElements
+        this.loading = false
       }).catch(error => {
         console.log(error)
       })
@@ -253,42 +263,41 @@ export default {
     },
     //  重置
     resetClick () {
-      this.refreshTable()
+      this.fetchData()
       this.searchInput.number = ''
       this.searchInput.flag = ''
     },
-    refreshTable () {
-      this.$apollo.query({
-        // Query
-        query: gql`query($currentPage:Int!){
-               selectAllPhone(currentPage:$currentPage)
-                      {
-                          content{
-                             number,
-                             flag
-                         },
-                          pageable{
-                              pageNumber,
-                              pageSize
-                          },
-                          totalElements,
-                          totalPages
-                      }
-
-       }`,
-        variables: {
-          currentPage: this.pagination.currentPage
-        }
-      }).then(res => {
-        this.tableData = res.data.test.content
-        console.log('totalElements:' + res.data.selectAllPhone.totalElements)
-        this.pagination.total = res.data.selectAllPhone.totalElements
-        this.loading = false
-      }).catch(error => {
-        console.log(error)
-        this.loading = false
-      })
-    },
+    // refreshTable () {
+    //   this.$apollo.query({
+    //     // Query
+    //     query: gql`query($currentPage:Int!){
+    //            selectAllPhone(currentPage:$currentPage)
+    //                   {
+    //                       content{
+    //                          number,
+    //                          flag
+    //                      },
+    //                       pageable{
+    //                           pageNumber,
+    //                           pageSize
+    //                       },
+    //                       totalElements,
+    //                       totalPages
+    //                   }
+    //
+    //    }`,
+    //     variables: {
+    //       currentPage: this.pagination.currentPage
+    //     }
+    //   }).then(res => {
+    //     this.tableData = res.data.test.content
+    //     this.pagination.total = res.data.selectAllPhone.totalElements
+    //     this.loading = false
+    //   }).catch(error => {
+    //     console.log(error)
+    //     this.loading = false
+    //   })
+    // },
     paginationCurrentChange (currentPage) {
       this.pagination.currentPage = currentPage
       this.fetchData()

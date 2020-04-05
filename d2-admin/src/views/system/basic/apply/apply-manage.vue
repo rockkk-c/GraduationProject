@@ -30,11 +30,6 @@
                 <el-input placeholder="请输入城市" v-model="searchInput. city" clearable style="width: 80%;">
                 </el-input>
               </div>
-              <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-                <div style="font-size: 18px;width: 40%;text-align: right;">父母电话:</div>
-                <el-input placeholder="请输入父母电话" v-model="searchInput. parent_phone" clearable style="width: 80%;">
-                </el-input>
-              </div>
 
             </div>
           </el-col>
@@ -42,6 +37,11 @@
         <el-row style="display: flex;align-items: center;">
           <el-col :span="16">
             <div style="display: flex;flex-direction: row;">
+              <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
+                <div style="font-size: 18px;width: 40%;text-align: right;">父母电话:</div>
+                <el-input placeholder="请输入父母电话" v-model="searchInput. parent_phone" clearable style="width: 80%;">
+                </el-input>
+              </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
                 <div style="font-size: 18px;width: 40%;text-align: right;margin-right: 20px;">同事电话:</div>
                 <el-input placeholder="请输入同事电话" v-model="searchInput. colleague_phone" clearable style="width: 80%;margin-right: 20px;">
@@ -54,8 +54,15 @@
               </div>
          <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
               <div style="font-size: 18px;width: 40%;text-align: right;margin-right: 20px;">状态:</div>
-              <el-input placeholder="请输入状态" v-model="searchInput. status" clearable style="width: 80%;margin-right: 20px;">
-              </el-input>
+                <el-select v-model="searchInput. status" placeholder="请选择进件状态">
+                  <el-option label="空" value="NULL"></el-option>
+                  <el-option label="无状态属性（针对新添加的未做任何修改的进件）" ></el-option>
+                  <el-option label="申请中" value="IN_PROGREESS"></el-option>
+                  <el-option label="已还清" value="PAIDOFF"></el-option>
+                  <el-option label="还款中" value="RETURNING"></el-option>
+                  <el-option label="逾期" value="OVERDUE"></el-option>
+                  <el-option label="通过欺诈检测" value="ThroughInfoTest"></el-option>
+                </el-select>
             </div>
 
             </div>
@@ -105,7 +112,6 @@
           :pagination="pagination"
           @pagination-current-change="paginationCurrentChange"/>
       </el-col>
-
 
     </el-row>
 
@@ -224,8 +230,8 @@ export default {
                     colleague_phone:$colleague_phone,
                     company_phone:$company_phone,
                     status:$status,
-                    currentPage:$currentPage
-            }){
+            },currentPage:$currentPage){
+                content{
                     id,
                     amount,
                     term,
@@ -236,6 +242,13 @@ export default {
                     company_phone,
                     applicant,
                     status
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                   }
         }`,
         variables: {
@@ -251,7 +264,9 @@ export default {
         }
       }).then(res => {
         console.log(res)
-        This.tableData = res.data.selectApplicantcontent
+        This.tableData = res.data.selectApplicant.content
+        this.pagination.total = res.data.selectApplicant.totalElements
+        this.loading = false
       }).catch(error => {
         console.log(error)
       })
@@ -333,7 +348,7 @@ export default {
           })
         } else {
           this.$message({
-            message: '进件添加失败',
+            message: res.data.addApplicant.message,
             type: 'error'
           })
         }
@@ -347,6 +362,7 @@ export default {
       this.updateForm.amount = row.amount
       this.updateForm.term = row.term
       this.updateForm.job = row.job
+      this.updateForm.city = row.city
       this.updateForm.parent_phone = row.parent_phone
       this.updateForm.colleague_phone = row.colleague_phone
       this.updateForm.company_phone = row.company_phone
@@ -461,7 +477,7 @@ export default {
     },
     //  重置
     resetClick () {
-      this.refreshTable()
+      this.fetchData()
       this.searchInput.id = ''
       this.searchInput.amount = ''
       this.searchInput.job = ''
@@ -471,44 +487,46 @@ export default {
       this.searchInput.company_phone = ''
       this.searchInput.status = ''
     },
-    refreshTable () {
-      let This = this
-
-      this.$apollo.query({
-        // Query
-        query: gql`query($currentPage:Int!){
-               selectAllApplicant(currentPage:$currentPage)
-                      {
-                          content{
-                           id,
-                           amount,
-                           term,
-                           job,
-                           city,
-                           parent_phone,
-                           colleague_phone,
-                           company_phone,
-                           applicant,
-                           status
-                         },
-                          pageable{
-                              pageNumber,
-                              pageSize
-                          },
-                          totalElements,
-                          totalPages
-                      }
-
-       }`,
-        variables: {
-          currentPage: this.pagination.currentPage
-        }
-      }).then(res => {
-        This.tableData = res.data.selectAllApplicant.content
-      }).catch(error => {
-        console.log(error)
-      })
-    },
+    // refreshTable () {
+    //   let This = this
+    //
+    //   this.$apollo.query({
+    //     // Query
+    //     query: gql`query($currentPage:Int!){
+    //            selectAllApplicant(currentPage:$currentPage)
+    //                   {
+    //                       content{
+    //                        id,
+    //                        amount,
+    //                        term,
+    //                        job,
+    //                        city,
+    //                        parent_phone,
+    //                        colleague_phone,
+    //                        company_phone,
+    //                        applicant,
+    //                        status
+    //                      },
+    //                       pageable{
+    //                           pageNumber,
+    //                           pageSize
+    //                       },
+    //                       totalElements,
+    //                       totalPages
+    //                   }
+    //
+    //    }`,
+    //     variables: {
+    //       currentPage: this.pagination.currentPage
+    //     }
+    //   }).then(res => {
+    //     This.tableData = res.data.selectAllApplicant.content
+    //     this.pagination.total = res.data.selectAllApplicant.totalElements
+    //     this.loading = false
+    //   }).catch(error => {
+    //     console.log(error)
+    //   })
+    // },
     addTableData (id, amount, term, job, city, parentPhone, colleaguePhone, companyPhone, applicant) {
       let This = this
       let i = This.tableData.length

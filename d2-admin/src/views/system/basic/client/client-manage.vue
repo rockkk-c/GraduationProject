@@ -157,21 +157,28 @@ export default {
       let This = this
       this.$apollo.query({
         // Query
-        query: gql`query($id:String,$name:String,$sex:String,$number:String,$flag:String,$currentPage){
+        query: gql`query($id:String,$name:String,$sex:String,$number:String,$flag:String,$currentPage:Int!){
                 selectPerson(person:{
                  id:$id,
                  name:$name,
                  sex:$sex,
                  number:$number,
-                 flag:$flag,
-                 currentPage:$currentPage
-                })
+                 flag:$flag
+                },currentPage:$currentPage)
                  {
+                 content{
                     id,
                     name,
                     sex,
                     number,
                     flag
+                         },
+                          pageable{
+                              pageNumber,
+                              pageSize
+                          },
+                          totalElements,
+                          totalPages
                  }
        }`,
         variables: {
@@ -185,6 +192,8 @@ export default {
       }).then(res => {
         console.log(res)
         This.tableData = res.data.selectPerson.content
+        this.pagination.total = res.data.selectPerson.totalElements
+        this.loading = false
       }).catch(error => {
         console.log(error)
       })
@@ -340,6 +349,8 @@ export default {
         }
       }).then(res => {
         This.tableData = res.data.selectAllPerson.content
+        this.pagination.total = res.data.selectAllPerson.totalElements
+        this.loading = false
       }).catch(error => {
         console.log(error)
       })

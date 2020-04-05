@@ -125,7 +125,6 @@ public class PersonService {
     public Page<Person> fakeInfoCheck(@GraphQLArgument(name = "id", description = "applyId")String id,
                                       @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
 
-
         return personRepository.fakeInfoCheck(id, PageRequest.of(currentPage-1,10));
     }
     @GraphQLQuery(name = "fakeInfoCheckCount", description = "不同申请人有相同的电话")

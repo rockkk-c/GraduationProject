@@ -77,11 +77,12 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     int fakeInfoCheckCount(@Param("id") String id);
 
     /*
-     * 不同申请人有相同的电话返回List<Person>
+     * 不同申请人有相同的电话返回List<Person>,环检测
      */
     @Query("match (a1:Applicant)<-[]-(p1:Person)-[:HAS_PHONE]->(:Phone)<-[:HAS_PHONE]-(p:Person)-[]->(a:Applicant) where a1.id={id} return p,p1")
     Page<Person> fakeInfoCheck(@Param("id") String id,@Param("pageable") Pageable pageable);
-
+    @Query("match (p1:Person)-[]->(a1:Applicant)-[:COMPANY_PHONE]->(:Phone)<-[:COMPANY_PHONE]-(a:Applicant)<-[]-(p:Person) where a1.id={id} return p,p1")
+    Page<Person> fakeInfoCheck2(@Param("id") String id,@Param("pageable") Pageable pageable);
     /*
      * 根据Applicant.id查询person
      */

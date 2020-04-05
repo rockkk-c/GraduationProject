@@ -53,24 +53,22 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
     /*
     * 创建COLLEAGUE_OF关系1
     * */
-    @Query("MATCH (n:Applicant) ,(p:Person)\n" +
-            "WHERE n.colleague_phone =  p.number\n" +
-            "merge (n)<-[r:COLLEAGUE_OF]->(p)")
+    @Query("Match (n1:Person)-[]->(a1:Applicant)-[:COMPANY_PHONE]->(p:Phone)<-[:HAS_PHONE]-(n2:Person)\n" +
+            "merge (n1)<-[r:COLLEAGUE_OF]-(n2)")
     void createColleagueOf1();
 
     /*
      * 创建COLLEAGUE_OF关系2
      * */
-    @Query("MATCH (n:Applicant) ,(n1:Applicant)\n" +
-            "WHERE n.colleague_phone = n1.colleague_phone AND n.id<>n1.id\n" +
-            "merge (n)<-[r:COLLEAGUE_OF]->(n1)")
+    @Query("MATCH (n1:Person)-[]->(n:Applicant)-[:COMPANY_PHONE]->(p:Phone)<-[:COMPANY_PHONE]-(p:Applicant)<-[]-(n2:Person)\n" +
+            "WHERE  n1.id <> n2.id\n" +
+            "merge (n1)<-[r:COLLEAGUE_OF]->(n2)")
     void createColleagueOf2();
 
     /*创建PARENT_OF关系
     * */
-    @Query("MATCH (n:Applicant) ,(p:Person)\n" +
-            "WHERE n.parent_phone =  p.number\n" +
-            "merge (n)<-[r:PARENT_OF]-(p)")
+    @Query("Match (n1:Person)-[]->(a1:Applicant)-[:PARENT_PHONE]->(p:Phone)<-[:HAS_PHONE]-(n2:Person)\n" +
+            "merge (n1)<-[r:PARENT_OF]-(n2)")
     void createParentOf();
 
     /**
@@ -96,8 +94,7 @@ public interface ApplicantRepository extends Neo4jRepository<Applicant, Long> {
      **/
     @Query(value = "MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone}" +
             "or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN n",
-    countQuery = "MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone}\" +\n" +
-            "            \"or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN count(n)")
+    countQuery = "MATCH (n:Applicant) where n.id={id} or n.amount={amount} or n.term={term} or n.job={job} or n.city={city} or n.parent_phone={parent_phone} or n.colleague_phone={colleague_phone} or n.company_phone={company_phone} or n.status={status}  RETURN count(n)")
     Page<Applicant> selectApplicant(@Param("id") String id,@Param("amount")String amount,@Param("term")String term,
                                     @Param("job")String job,@Param("city")String city,@Param("parent_phone")String parent_phone,
                                     @Param("colleague_phone")String colleague_phone,@Param("company_phone")String company_phone,
