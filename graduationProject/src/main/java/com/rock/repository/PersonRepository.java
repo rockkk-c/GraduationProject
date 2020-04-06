@@ -39,36 +39,36 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
     /*
      * 一维关系中触碰黑名单的人的个数
      */
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getOneDimenRelationshipBFCountByApplyId(@Param("applyId") String applyId);
     //一维关系中触碰黑名单的人-详情
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return p")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return p")
     List<Person> OneDimenRelationshipBFDetails(@Param("applyId") String applyId);
 
     /*
      * 一维关系中触碰黑名单的电话的个数
      */
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(:Person)-[]-(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getOneDimenRelationshipPhoneBFCountByApplyId(@Param("applyId") String applyId);
     //一维关系中触碰黑名单的电话-详情
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(n:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return n")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(n:Person)-[]-(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return n")
     List<Person> OneDimenRelationshipPhoneBFDetails(@Param("applyId") String applyId);
     /*
      * 二维关系中触碰黑名单的人的个数
      */
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(:Person)-[]-(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getTwoDimenRelationshipBFCountByApplyId(@Param("applyId") String applyId);
     //二维关系中触碰黑名单的人-详情
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return p")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(:Person)-[]-(p:Person) where a.id={applyId} and p.flag=\"BLACK\" return p")
     List<Person> TwoDimenRelationshipBFDetails(@Param("applyId") String applyId);
 
     /*
      * 二维关系中触碰黑名单的电话的个数
      */
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(:Person)-[]-(:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return count(p)")
     int getTwoDimenRelationshipPhoneBFCountByApplyId(@Param("applyId") String applyId);
     //二维关系中触碰黑名单的电话-详情
-    @Query("match (a:Applicant)<-[]-(:Person)-[]->(:Person)-[]->(n:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return n")
+    @Query("match (a:Applicant)<-[]-(:Person)-[]-(:Person)-[]-(n:Person)-[]->(p:Phone) where a.id={applyId} and p.flag=\"BLACK\" return n")
     List<Person> TwoDimenRelationshipPhoneBFDetals(@Param("applyId") String applyId);
     /*
      * 不同申请人有相同的电话返回count
@@ -80,9 +80,10 @@ public interface PersonRepository  extends CrudRepository<Person,Long> {
      * 不同申请人有相同的电话返回List<Person>,环检测
      */
     @Query("match (a1:Applicant)<-[]-(p1:Person)-[:HAS_PHONE]->(:Phone)<-[:HAS_PHONE]-(p:Person)-[]->(a:Applicant) where a1.id={id} return p,p1")
-    Page<Person> fakeInfoCheck(@Param("id") String id,@Param("pageable") Pageable pageable);
-    @Query("match (p1:Person)-[]->(a1:Applicant)-[:COMPANY_PHONE]->(:Phone)<-[:COMPANY_PHONE]-(a:Applicant)<-[]-(p:Person) where a1.id={id} return p,p1")
-    Page<Person> fakeInfoCheck2(@Param("id") String id,@Param("pageable") Pageable pageable);
+    List<Person> fakeInfoCheck1(@Param("id") String id);
+    @Query("MATCH (n1:Person)-[]-(a:Applicant)-[r1]-(:Phone)-[r11]-(:Applicant)-[]-(n2:Person)-[]-(:Phone)-[]-(n3:Person)-[]-(:Applicant)-[r3]-(:Phone)-[r33]-(:Applicant)-[]-(n4:Person) \n" +
+            "where a.id={id} return n1,n2,n3,n4")
+    List<Person> fakeInfoCheck2(@Param("id") String id);
     /*
      * 根据Applicant.id查询person
      */

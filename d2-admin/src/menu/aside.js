@@ -15,17 +15,15 @@ export default [
     icon: 'wpexplorer',
     children: [
       { path: '/info-detection', title: '信息检测', icon: '' },
-      { path: '/risk-predict', title: '风险预测', icon: '' },
-      { path: '/page3', title: '页面 3', icon: '' }
+      { path: '/risk-predict', title: '风险预测', icon: '' }
     ]
   },
   {
     title: '系统设置',
     icon: 'windows',
     children: [
-      { path: '/emp-manage', title: '员工管理', icon: '' },
-      { path: '/page2', title: '页面 2', icon: '' },
-      { path: '/page3', title: '页面 3', icon: '' }
+      { path: '/emp-manage', title: '员工管理', icon: '' }
+
     ]
   }
 ]

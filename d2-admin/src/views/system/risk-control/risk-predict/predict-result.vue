@@ -1,5 +1,6 @@
 <template xmlns:font-size="http://www.w3.org/1999/xhtml">
-  <d2-container>
+  <d2-container >
+    <div v-loading="loading" element-loading-text="拼命加载中" element-loading-background="rgba(0, 0, 0, 0.3)">
     <h1>信息检测结果</h1>
 <!--    <h1 style="color:red; width:70%;float:right;font-size:80px;" >{{predictResult}}</h1>-->
 <!--    <h2 style="color:red; width:30%;float:left">预测结果（0代表高风险，1代表低风险）：</h2>-->
@@ -110,7 +111,9 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
   </d2-container>
+
 </template>
 
 <script>
@@ -142,6 +145,7 @@ export default {
       this.OneDimenRelationshipPhoneBFDetails = res.data.resultDetails.OneDimenRelationshipPhoneBFDetails
       this.TwoDimenRelationshipBFDetails = res.data.resultDetails.TwoDimenRelationshipBFDetails
       this.TwoDimenRelationshipPhoneBFDetals = res.data.resultDetails.TwoDimenRelationshipPhoneBFDetals
+      this.loading = false
       console.log('clientBF:' + this.clientBF)
       console.log('clientPhoneBF:' + this.clientPhoneBF)
     }).catch(error => {
@@ -157,7 +161,8 @@ export default {
       OneDimenRelationshipBFDetails: [],
       OneDimenRelationshipPhoneBFDetails: [],
       TwoDimenRelationshipBFDetails: [],
-      TwoDimenRelationshipPhoneBFDetals: []
+      TwoDimenRelationshipPhoneBFDetals: [],
+      loading: true
     }
   }
 }

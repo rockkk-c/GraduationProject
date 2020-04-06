@@ -10,6 +10,7 @@ import com.rock.python.PyInterface;
 import com.rock.python.PyResult;
 import com.rock.repository.ApplicantRepository;
 import com.rock.repository.PersonRepository;
+import com.rock.repository.PhoneRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
@@ -41,6 +42,8 @@ public class ApplicantService {
     private PhoneService phoneService;
     @Autowired
     private  PersonService personService;
+    @Autowired
+    private PhoneRepository phoneRepository;
 
     @GraphQLQuery(name = "BFCheck", description = "获取特征数值,用来训练模型")
     public FeatureData BFCheck(@GraphQLArgument(name = "applyId", description = "applyId") String applyId) throws Exception {
@@ -336,6 +339,9 @@ public class ApplicantService {
         applicantRepository.updateApplicant1(applicant.getId());
         applicantRepository.updateApplicant2(applicant.getId(),applicant.getAmount(),applicant.getTerm(),applicant.getJob(),applicant.getCity()
                 ,applicant.getParent_phone(),applicant.getColleague_phone(),applicant.getCompany_phone(),applicant.getStatus());
+        phoneRepository.addPhone(applicant.getParent_phone(),"WHITE");
+        phoneRepository.addPhone(applicant.getColleague_phone(),"WHITE");
+        phoneRepository.addPhone(applicant.getCompany_phone(),"WHITE");
         applicantRepository.createColleaguePhone();
         applicantRepository.createCompanyPhone();
         applicantRepository.createParentPhone();

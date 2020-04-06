@@ -9,6 +9,7 @@ import com.rock.nodeEntity.Phone;
 import com.rock.repository.ApplicantRepository;
 import com.rock.repository.HasPhoneRepository;
 import com.rock.repository.PersonRepository;
+import com.rock.repository.PhoneRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @GraphQLApi
@@ -36,6 +38,8 @@ public class PersonService {
     private PhoneService phoneService;
     @Autowired
     private ApplicantRepository applicantRepository;
+    @Autowired
+    private PhoneRepository phoneRepository;
     @GraphQLMutation(name = "addPerson", description = "添加Person实体结点,同时添加Phone结点，并创建实体结点间关系")
     public Result addPerson(@GraphQLArgument(name = "person", description = "规则id")Person person){
 
@@ -86,6 +90,8 @@ public class PersonService {
     public Result updatePersonById(@GraphQLArgument(name="person",description = "person")Person person){
         personRepository.updatePersonById1(person.getId());
         personRepository.updatePersonById2(person.getId(),person.getName(),person.getSex(),person.getFlag(),person.getNumber());
+        phoneRepository.updatePhoneByNumber(person.getNumber(),person.getFlag());
+        phoneRepository.addPhone(person.getNumber(),"WHITE");
         personRepository.createHasPhone();
         applicantRepository.createColleaguePhone();
         applicantRepository.createCompanyPhone();
@@ -122,10 +128,13 @@ public class PersonService {
         return personRepository.getTwoDimenRelationshipPhoneBFCountByApplyId(applyId);
     }
     @GraphQLQuery(name = "fakeInfoCheck", description = "不同申请人有相同的电话")
-    public Page<Person> fakeInfoCheck(@GraphQLArgument(name = "id", description = "applyId")String id,
-                                      @GraphQLArgument(name = "currentPage", description = "currentPage") int currentPage){
+    public List<Person> fakeInfoCheck(@GraphQLArgument(name = "id", description = "applyId")String id){
+        List<Person> list1=personRepository.fakeInfoCheck1(id);
 
-        return personRepository.fakeInfoCheck(id, PageRequest.of(currentPage-1,10));
+        List<Person> list2=personRepository.fakeInfoCheck2(id);
+        list1.addAll(list2);
+        List newList = list1.stream().distinct().collect(Collectors.toList());
+        return newList;
     }
     @GraphQLQuery(name = "fakeInfoCheckCount", description = "不同申请人有相同的电话")
     public int fakeInfoCheckCount(@GraphQLArgument(name = "id", description = "id")String id){

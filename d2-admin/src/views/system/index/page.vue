@@ -37,12 +37,12 @@
           </el-col>
         </el-row>
 
-        <el-row style="margin-top: 60px;">
-          <el-col :span="24">
-            <ve-histogram :data="chartData" :extend="extend"></ve-histogram>
-          </el-col>
+<!--        <el-row style="margin-top: 60px;">-->
+<!--          <el-col :span="24">-->
+<!--            <ve-histogram :data="chartData" :extend="extend"></ve-histogram>-->
+<!--          </el-col>-->
 
-        </el-row>
+<!--        </el-row>-->
 
       </el-col>
 

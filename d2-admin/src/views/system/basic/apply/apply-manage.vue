@@ -346,6 +346,17 @@ export default {
             message: '进件添加成功',
             type: 'success'
           })
+          this.tableData.push({
+            id: this.createFrom.id,
+            amount: this.createFrom.amount,
+            term: this.createFrom.term,
+            job: this.createFrom.job,
+            city: this.createFrom.city,
+            parent_phone: this.createFrom.parent_phone,
+            colleague_phone: this.createFrom.colleague_phone,
+            company_phone: this.createFrom.company_phone,
+            applicant: this.createFrom.applicant
+          })
         } else {
           this.$message({
             message: res.data.addApplicant.message,

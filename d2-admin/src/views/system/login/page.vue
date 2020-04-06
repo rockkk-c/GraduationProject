@@ -89,82 +89,82 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs'
-  import {
-    mapActions
-  } from 'vuex'
-  import localeMixin from '@/locales/mixin.js'
-  import gql from "graphql-tag"
-  export default {
-    mixins: [
-      localeMixin
-    ],
-    data() {
-      return {
-        timeInterval: null,
-        time: dayjs().format('HH:mm:ss'),
-        // 快速选择用户
-        dialogVisible: false,
-        users: [{
-            name: 'Admin',
-            username: 'admin',
-            password: 'admin'
-          },
-          {
-            name: 'Editor',
-            username: 'editor',
-            password: 'editor'
-          },
-          {
-            name: 'User1',
-            username: 'user1',
-            password: 'user1'
-          }
-        ],
-        // 表单
-        formLogin: {
-          username: '',
-          password: '',
-          role: 0,
-          code: 'v9am'
-        },
-        // 表单校验
-        rules: {
-          username: [{
-            required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          }],
-          password: [{
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          }],
-          code: [{
-            required: true,
-            message: '请输入验证码',
-            trigger: 'blur'
-          }]
-        },
-        role: "admin"
+import dayjs from 'dayjs'
+import {
+  mapActions
+} from 'vuex'
+import localeMixin from '@/locales/mixin.js'
+import gql from 'graphql-tag'
+export default {
+  mixins: [
+    localeMixin
+  ],
+  data () {
+    return {
+      timeInterval: null,
+      time: dayjs().format('HH:mm:ss'),
+      // 快速选择用户
+      dialogVisible: false,
+      users: [{
+        name: 'Admin',
+        username: 'admin',
+        password: 'admin'
+      },
+      {
+        name: 'Editor',
+        username: 'editor',
+        password: 'editor'
+      },
+      {
+        name: 'User1',
+        username: 'user1',
+        password: 'user1'
       }
-    },
-    mounted() {
-      this.timeInterval = setInterval(() => {
-        this.refreshTime()
-      }, 1000)
-    },
-    beforeDestroy() {
-      clearInterval(this.timeInterval)
-    },
-    methods: {
-      ...mapActions('d2admin/account', [
-        'login'
-      ]),
-      test() {
-        this.$apollo.query({
-          // Query
-          query: gql `query($role:String!){
+      ],
+      // 表单
+      formLogin: {
+        username: '',
+        password: '',
+        role: 0,
+        code: 'v9am'
+      },
+      // 表单校验
+      rules: {
+        username: [{
+          required: true,
+          message: '请输入用户名',
+          trigger: 'blur'
+        }],
+        password: [{
+          required: true,
+          message: '请输入密码',
+          trigger: 'blur'
+        }],
+        code: [{
+          required: true,
+          message: '请输入验证码',
+          trigger: 'blur'
+        }]
+      },
+      role: 'admin'
+    }
+  },
+  mounted () {
+    this.timeInterval = setInterval(() => {
+      this.refreshTime()
+    }, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.timeInterval)
+  },
+  methods: {
+    ...mapActions('d2admin/account', [
+      'login'
+    ]),
+    test () {
+      this.$apollo.query({
+        // Query
+        query: gql`query($role:String!){
              loadListOfEmployee(employee:{
                role:$role
              })
@@ -172,77 +172,75 @@
                  name
             }
          }`,
-          // Parameters
-          variables: {
-            role: this.role,
-          }
-        }).then(data => {
-          console.log(data)
-        }).catch(error => {
-          console.log(error)
-        })
-      },
-      refreshTime() {
-        this.time = dayjs().format('HH:mm:ss')
-      },
-      /**
+        // Parameters
+        variables: {
+          role: this.role
+        }
+      }).then(data => {
+        console.log(data)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    refreshTime () {
+      this.time = dayjs().format('HH:mm:ss')
+    },
+    /**
        * @description 接收选择一个用户快速登录的事件
        * @param {Object} user 用户信息
        */
-      handleUserBtnClick(user) {
-        console.log(111);
-        this.formLogin.username = user.username
-        this.formLogin.password = user.password
-        this.submit()
-      },
-      /**
+    handleUserBtnClick (user) {
+      console.log(111)
+      this.formLogin.username = user.username
+      this.formLogin.password = user.password
+      this.submit()
+    },
+    /**
        * @description 提交表单
        */
-      // 提交登录信息
-      submit() {
-
-        let This = this;
-        this.$refs.loginForm.validate((valid) => {
-          if (valid) {
-            this.$apollo.query({
-              // Query
-              query: gql `query($empId:String!,$empPwd:String!,$empRole:String!){
+    // 提交登录信息
+    submit () {
+      let This = this
+      this.$refs.loginForm.validate((valid) => {
+        if (valid) {
+          this.$apollo.query({
+            // Query
+            query: gql`query($empId:String!,$empPwd:String!,$empRole:String!){
                  login(empId:$empId,empPwd:$empPwd,empRole:$empRole){
                       code,
                       message
                   }
              }`,
-              // Parameters
-              variables: {
-                empId: This.formLogin.username,
-                empPwd: This.formLogin.password,
-                empRole: This.formLogin.role == 0 ? 'admin' : 'staff'
-              }
-            }).then(res => {
-              
-              if (res.data.login.code == 0) {
-                // 设置全局状态
-                This.$store.state.role = This.formLogin.role == 0 ? 'admin' : 'staff';
-                this.login({
-                    username: "admin",
-                    password: "admin"
-                  })
-                  .then(() => {
-                    // 重定向对象不存在则返回顶层路径
-                    this.$router.replace(this.$route.query.redirect || '/')
-                  })
-              } else {
-                This.$message.error(res.data.login.message);
-              }
-            }).catch(error => {
-              This.$message.error("服务器地址异常，" + error);
-            })
+            // Parameters
+            variables: {
+              empId: This.formLogin.username,
+              empPwd: This.formLogin.password,
+              empRole: This.formLogin.role === 0 ? 'admin' : 'staff'
+            }
+          }).then(res => {
+            if (res.data.login.code === 0) {
+              // 设置全局状态
+              This.$store.state.role = This.formLogin.role === 0 ? 'admin' : 'staff'
 
-          }
-        })
-      }
+              this.login({
+                username: 'admin',
+                password: 'admin'
+              })
+                .then(() => {
+                  // 重定向对象不存在则返回顶层路径
+                  this.$router.replace(this.$route.query.redirect || '/')
+                })
+            } else {
+              This.$message.error(res.data.login.message)
+            }
+          }).catch(error => {
+            This.$message.error('服务器地址异常，' + error)
+          })
+        }
+      })
     }
   }
+}
 </script>
 
 <style lang="scss">
