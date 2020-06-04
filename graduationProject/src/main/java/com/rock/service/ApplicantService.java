@@ -216,7 +216,7 @@ public class ApplicantService {
     *
     * */
 
-    @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,同时添加Person结点，并创建关系Person-[r:HAS_PHONE]->Phone")
+    @GraphQLMutation(name = "addApplicant", description = "添加addApplicant实体结点,并创建关系Person-[r:HAS_PHONE]->Phone")
     public Result  addApplicant(@GraphQLArgument(name = "applicant", description = "进件")Applicant applicant){
         if(this.verifyTheOnlyApplicacnt(applicant.getId())==true){
             return Result.error("此Applicant的id已存在，请重新输入");

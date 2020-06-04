@@ -184,6 +184,13 @@ export default {
     },
     updateBtn () {
       let This = this
+      if (this.$store.state.role === 'admin' && This.updateForm.empRole && This.$store.state.id !== This.updateForm.empId) {
+        This.$message({
+          message: '管理员无法修改除自己外的管理员信息',
+          type: 'error'
+        })
+        return 0
+      }
       this.$apollo.mutate({
         // Query
         mutation: gql`mutation ($id: String!,$empName: String!,$pwd: String!,$role: String!) {
@@ -246,7 +253,7 @@ export default {
             role: This.form.empRole
           }
         }).then(res => {
-          if (res.data.addEmployee.code == 0) {
+          if (res.data.addEmployee.code === 0) {
             This.$message({
               message: '员工添加成功',
               type: 'success'

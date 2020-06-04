@@ -221,7 +221,7 @@ export default {
             if (res.data.login.code === 0) {
               // 设置全局状态
               This.$store.state.role = This.formLogin.role === 0 ? 'admin' : 'staff'
-
+              This.$store.state.id = This.formLogin.username
               this.login({
                 username: 'admin',
                 password: 'admin'

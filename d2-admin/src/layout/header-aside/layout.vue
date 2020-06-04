@@ -25,14 +25,9 @@
         <!-- 顶栏右侧 -->
         <div class="d2-header-right" flex-box="0">
           <!-- 如果你只想在开发环境显示这个按钮请添加 v-if="$env === 'development'" -->
-          <!-- <d2-header-search @click="handleSearchClick"/> -->
-          <!-- <d2-header-log/> -->
           <d2-header-fullscreen/>
           <d2-header-theme/>
-          <!-- <d2-header-size/> -->
-          <d2-header-locales/>
-          <!-- <d2-header-color/> -->
-          <d2-header-user/>
+          <d2-header-user :name="name" :role="role"/>
         </div>
       </div>
       <!-- 下面 主体 -->
@@ -86,13 +81,9 @@ import d2MenuSide from './components/menu-side'
 import d2MenuHeader from './components/menu-header'
 import d2Tabs from './components/tabs'
 import d2HeaderFullscreen from './components/header-fullscreen'
-import d2HeaderLocales from './components/header-locales'
-import d2HeaderSearch from './components/header-search'
-import d2HeaderSize from './components/header-size'
+
 import d2HeaderTheme from './components/header-theme'
 import d2HeaderUser from './components/header-user'
-import d2HeaderLog from './components/header-log'
-import d2HeaderColor from './components/header-color'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import mixinSearch from './mixins/search'
 export default {
@@ -105,20 +96,17 @@ export default {
     d2MenuHeader,
     d2Tabs,
     d2HeaderFullscreen,
-    d2HeaderLocales,
-    d2HeaderSearch,
-    d2HeaderSize,
     d2HeaderTheme,
-    d2HeaderUser,
-    d2HeaderLog,
-    d2HeaderColor
+    d2HeaderUser
   },
   data () {
     return {
       // [侧边栏宽度] 正常状态
       asideWidth: '200px',
       // [侧边栏宽度] 折叠状态
-      asideWidthCollapse: '65px'
+      asideWidthCollapse: '65px',
+      name: '',
+      role: ''
     }
   },
   computed: {
@@ -132,8 +120,8 @@ export default {
       themeActiveSetting: 'theme/activeSetting'
     }),
     /**
-     * @description 最外层容器的背景图片样式
-     */
+       * @description 最外层容器的背景图片样式
+       */
     styleLayoutMainGroup () {
       return {
         ...this.themeActiveSetting.backgroundImage ? {
@@ -142,13 +130,66 @@ export default {
       }
     }
   },
+  created () {
+    if (this.$store.state.role === 'admin') {
+      this.$store.commit('d2admin/menu/asideSet', [
+        { path: '/index', title: '首页', icon: 'home' },
+        {
+          title: '基础信息',
+          icon: 'user',
+          children: [
+            { path: '/client-manage', title: '客户管理', icon: '' },
+            { path: '/apply-manage', title: '进件管理', icon: '' },
+            { path: '/number-manage', title: '号码管理', icon: '' }
+          ]
+        },
+        {
+          title: '贷前风控',
+          icon: 'wpexplorer',
+          children: [
+            { path: '/info-detection', title: '信息检测', icon: '' },
+            { path: '/risk-predict', title: '风险预测', icon: '' }
+          ]
+        },
+        {
+          title: '系统设置',
+          icon: 'windows',
+          children: [
+            { path: '/emp-manage', title: '员工管理', icon: '' }
+
+          ]
+        }
+      ])
+    } else {
+      this.$store.commit('d2admin/menu/asideSet', [
+        { path: '/index', title: '首页', icon: 'home' },
+        {
+          title: '基础信息',
+          icon: 'user',
+          children: [
+            { path: '/client-manage', title: '客户管理', icon: '' },
+            { path: '/apply-manage', title: '进件管理', icon: '' },
+            { path: '/number-manage', title: '号码管理', icon: '' }
+          ]
+        },
+        {
+          title: '贷前风控',
+          icon: 'wpexplorer',
+          children: [
+            { path: '/info-detection', title: '信息检测', icon: '' },
+            { path: '/risk-predict', title: '风险预测', icon: '' }
+          ]
+        }
+      ])
+    }
+  },
   methods: {
     ...mapActions('d2admin/menu', [
       'asideCollapseToggle'
     ]),
     /**
-     * 接收点击切换侧边栏的按钮
-     */
+       * 接收点击切换侧边栏的按钮
+       */
     handleToggleAside () {
       this.asideCollapseToggle()
     }
@@ -157,6 +198,6 @@ export default {
 </script>
 
 <style lang="scss">
-// 注册主题
-@import '~@/assets/style/theme/register.scss';
+  // 注册主题
+  @import '~@/assets/style/theme/register.scss';
 </style>

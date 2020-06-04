@@ -31,7 +31,7 @@
                 </el-input>
               </div>
               <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-                <div style="font-size: 18px;width: 40%;text-align: right;margin-right: 20px;">申请人:</div>
+                <div style="font-size: 18px;width: 45%;text-align: right;margin-right: 20px;">申请人:</div>
                 <el-input placeholder="请输入申请人" v-model="searchInput. applicant" clearable style="width: 80%;margin-right: 20px;">
                 </el-input>
               </div>
